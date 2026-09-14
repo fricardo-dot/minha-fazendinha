@@ -1,12 +1,12 @@
 import { BALANCE } from '../config/balance.js';
-import { UPGRADES, PRODUCT_REWARD } from '../config/content.js';
+import { UPGRADES, PRODUCT_REWARD, PRODUCT_KEY } from '../config/content.js';
 
 export function basketValue(basket) {
-  return basket.eggs * PRODUCT_REWARD.egg + basket.milk * PRODUCT_REWARD.milk;
+  return Object.entries(PRODUCT_KEY).reduce((sum, [product, key]) => sum + (basket[key] || 0) * PRODUCT_REWARD[product], 0);
 }
 
 export function basketIsEmpty(basket) {
-  return basket.eggs === 0 && basket.milk === 0;
+  return Object.values(PRODUCT_KEY).every((key) => !(basket[key] > 0));
 }
 
 export function shouldPlayEggMinigame(basket) {

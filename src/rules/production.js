@@ -18,6 +18,10 @@ export function tickAnimal(animal, now) {
     a = { ...a, state: 'hungry' };
   }
   // Sujeira e pelo despenteado aparecem com o tempo, um de cada vez, nunca como castigo
+  if (cfg.mudBath) {
+    if (!a.scruffy && a.scruffyAt && now >= a.scruffyAt) a = { ...a, scruffy: true };
+    return a;
+  }
   if (!a.dirty && !a.scruffy && a.dirtyAt && now >= a.dirtyAt) {
     a = { ...a, dirty: true };
   } else if (!a.scruffy && !a.dirty && a.scruffyAt && now >= a.scruffyAt) {

@@ -10,6 +10,7 @@ import { useDropTarget, useDrag } from '../interaction/DragContext.jsx';
 import { useAnimalBehavior } from './useAnimalBehavior.js';
 import { ChickenSprite, Nest } from './Chicken.jsx';
 import { CowSprite } from './Cow.jsx';
+import { PigSprite } from './Pig.jsx';
 import { ItemIcon } from '../components/ItemIcon.jsx';
 import { HeartShape } from '../components/Fx.jsx';
 import { stageFor, progressFor } from '../rules/friendship.js';
@@ -18,10 +19,12 @@ import { audio } from '../audio/AudioManager.js';
 const SPRITES = {
   chicken: { Sprite: ChickenSprite, w: 200, h: 200, zone: 'coopYard' },
   cow: { Sprite: CowSprite, w: 300, h: 240, zone: 'pasture' },
+  pig: { Sprite: PigSprite, w: 200, h: 150, zone: 'pigpen' },
 };
 
 function homeOf(def) {
   if (def.type === 'chicken') return LAYOUT.chickenSlots[def.slot];
+  if (def.type === 'pig') return LAYOUT.pig;
   return LAYOUT.cow;
 }
 
@@ -66,7 +69,10 @@ export function AnimalActor({ id }) {
   const react = (kind) => { setReaction(kind); setTimeout(() => setReaction(null), 650); };
 
   const { ref, isHover, wantsHeld } = useDropTarget(`animal:${id}`, {
-    accepts: (item) => !care && (item.kind === BALANCE.animals[def.type].food || !!CARE_TOOLS[item.kind]),
+    accepts: (item) => !care && (
+      item.kind === BALANCE.animals[def.type].food
+      || (!!CARE_TOOLS[item.kind] && !(item.kind === 'sponge' && BALANCE.animals[def.type].mudBath))
+    ),
     onDrop: (item) => {
       wake();
       if (CARE_TOOLS[item.kind]) return actions.startCare(id, item.kind);
@@ -80,7 +86,7 @@ export function AnimalActor({ id }) {
 
   const onTap = () => {
     wake();
-    if (def.type === 'cow' && animal.state === 'ready') { actions.openMilking(id); return; }
+    if (animal.state === 'ready' && BALANCE.animals[def.type].collectMinigame) { actions.openCollectMinigame(id); return; }
     actions.pet(id, center());
     react('happy');
   };
@@ -94,14 +100,17 @@ export function AnimalActor({ id }) {
 
   const wantIcon = inCare ? null
     : animal.state === 'hungry' ? BALANCE.animals[def.type].food
-      : (def.type === 'cow' && animal.state === 'ready') ? 'milk'
+      : (animal.state === 'ready' && BALANCE.animals[def.type].readyIcon) ? BALANCE.animals[def.type].readyIcon
         : animal.dirty ? 'sponge'
           : animal.scruffy ? 'brush'
             : null;
   const progress = inCare ? care.strokes / BALANCE.care.strokes : 0;
   const dirtOpacity = animal.dirty ? (inCare && care.kind === 'wash' ? 1 - progress : 1) : 0;
   const scruffOpacity = animal.scruffy ? (inCare && care.kind === 'brush' ? 1 - progress : 1) : 0;
-  const moodCls = animal.state === 'eating' ? 'is-eating' : mood === 'sleep' ? 'is-sleeping' : mood === 'walk' ? 'is-walking' : 'is-idle';
+  const mudBath = !!BALANCE.animals[def.type].mudBath;
+  const muddy = mudBath ? (animal.state === 'ready' ? 1 : animal.state === 'producing' ? 0.6 : 0) : 0;
+  const rolling = mudBath && animal.state === 'producing';
+  const moodCls = animal.state === 'eating' ? 'is-eating' : rolling ? 'is-rolling' : mood === 'sleep' ? 'is-sleeping' : mood === 'walk' ? 'is-walking' : 'is-idle';
   const cls = ['fz-animal', 'fz-tappable', moodCls, reaction === 'happy' && 'is-happy', reaction === 'shake' && 'is-shaking', isHover && 'is-drop-hover', wantsHeld && animal.state === 'hungry' && 'wants-held', hint === `animal:${id}` && 'is-hinted'].filter(Boolean).join(' ');
 
   return (
@@ -111,7 +120,7 @@ export function AnimalActor({ id }) {
         <div className="fz-press" style={{ width: cfg.w, height: cfg.h }}>
           <div className={`fz-animal-flip ${facing < 0 ? 'face-left' : ''}`}>
             <div className="fz-animal-body">
-              <cfg.Sprite expression={expression} stage={stage} dirt={dirtOpacity} scruff={scruffOpacity} />
+              <cfg.Sprite expression={rolling ? 'happy' : expression} stage={stage} dirt={dirtOpacity} scruff={scruffOpacity} muddy={muddy} />
             </div>
           </div>
         </div>

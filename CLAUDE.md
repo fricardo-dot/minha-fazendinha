@@ -9,7 +9,7 @@ Jogo para criança de 3 anos em tablet touch. Estas regras valem para qualquer a
 - Erro = reação divertida + tentar de novo (item volta com balanço; animal balança a cabeça).
 - Sem anúncios, compras, loot boxes, links externos acessíveis à criança.
 - Toda interação deve funcionar por **arrastar E por tocar-e-tocar** (ver `interaction/DragContext.jsx`). Nunca depender de hover, teclado ou double tap.
-- Áreas de toque infladas (`.fz-touch`), mínimo `MIN_TOUCH` em `config/layout.js`.
+- Áreas de toque infladas (`.fz-touch`), mínimo `MIN_TOUCH` em `config/layout.js`. Ao posicionar algo novo, conferir que a área de toque não cai dentro da de outro objeto (o desenhado por último ganha o toque) — foi o que aconteceu com a placa do chiqueiro sobre a vaca.
 
 ## Contratos de código
 
@@ -19,6 +19,8 @@ Jogo para criança de 3 anos em tablet touch. Estas regras valem para qualquer a
 - Timers são timestamps absolutos (`rules/production.js`); o `TICK` só compara com `now`. Isso garante progresso sem punição ao voltar depois de horas.
 - Persistência só pela interface de `persistence/storage.js`. Mudou o formato do save: subir `SCHEMA_VERSION` e tratar em `migrate()`.
 - Novo minigame: componente com props `{ params, onDone, onExit }` + entrada em `minigames/registry.js`. Sair antes nunca é castigo.
+- Animal cuja coleta é um minigame (vaca → ordenha, porco → banho): `collectMinigame` e `readyIcon` em `balance.animals[tipo]`; o minigame chama `actions.finishCollect(animalId)` ao terminar. Produto novo = `PRODUCT_KEY` + `PRODUCT_REWARD` em content.js e campo na cesta (`initialState` + `DELIVER`).
+- Animal desbloqueável: `requires: '<upgradeId>'` em `ANIMALS` + `unlocksAnimal` na melhoria. Renderização e dicas só olham `unlockedAnimalDefs(state)`; `depth` define a ordem de desenho (fundo primeiro).
 - Áudio só via `audio.play('nome')`; trocar síntese por arquivos é mudança interna em `audio/`.
 - Cuidado por gesto (lavar/escovar): a sessão vive em `GameProvider` (`care`, `startCare/careStroke/cancelCare`); a regra fica em `rules/production.js` (`applyCare`). Nova ferramenta = entrada em `CARE_TOOLS` (content.js) + ícone + fonte no `CareKit`.
 

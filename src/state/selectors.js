@@ -1,9 +1,11 @@
 import { BALANCE } from '../config/balance.js';
-import { UPGRADES } from '../config/content.js';
+import { UPGRADES, unlockedAnimalDefs } from '../config/content.js';
 import { basketIsEmpty } from '../rules/economy.js';
 
+export const unlockedAnimals = (state) => unlockedAnimalDefs(state).map((d) => state.animals[d.id]).filter(Boolean);
+
 export const animalsOfType = (state, type) =>
-  Object.values(state.animals).filter((a) => a.type === type);
+  unlockedAnimals(state).filter((a) => a.type === type);
 
 export const hungryOf = (state, type) => animalsOfType(state, type).filter((a) => a.state === 'hungry');
 
@@ -16,7 +18,7 @@ export function affordableUpgrade(state) {
  * Retorna um id de alvo usado pelo sistema de dicas (brilho/balanço).
  */
 export function nextHint(state) {
-  const animals = Object.values(state.animals);
+  const animals = unlockedAnimals(state);
 
   const eggOnGround = animals.find((a) => a.type === 'chicken' && a.state === 'ready');
   if (eggOnGround) return `egg:${eggOnGround.id}`;
@@ -24,11 +26,12 @@ export function nextHint(state) {
   const readyPlot = state.plots.findIndex((p) => p.stage === 'ready');
   if (readyPlot >= 0) return `plot:${readyPlot}`;
 
-  const milkReady = animals.find((a) => a.type === 'cow' && a.state === 'ready');
-  if (milkReady) return `animal:${milkReady.id}`;
+  const minigameReady = animals.find((a) => a.type !== 'chicken' && a.state === 'ready');
+  if (minigameReady) return `animal:${minigameReady.id}`;
 
   if (hungryOf(state, 'chicken').length && state.inventory.corn > 0) return 'source:corn';
   if (hungryOf(state, 'cow').length) return 'source:hay';
+  if (hungryOf(state, 'pig').length && state.inventory.corn > 0) return 'source:corn';
 
   if (animals.some((a) => a.dirty)) return 'source:sponge';
   if (animals.some((a) => a.scruffy)) return 'source:brush';

@@ -164,6 +164,16 @@ svg { display: block; overflow: visible; }
 .fz-heartmeter .h { position: relative; width: 34px; height: 34px; }
 .fz-heartmeter .h .fill { position: absolute; inset: 0; overflow: hidden; }
 
+/* Porquinho rolando na lama */
+.fz-animal.is-rolling .fz-animal-body { animation: fz-roll 1.1s ease-in-out infinite; }
+@keyframes fz-roll { 0%,100% { transform: rotate(-10deg) translateY(4px);} 50% { transform: rotate(12deg) translateY(0);} }
+
+/* Minigame: lavar o porquinho */
+.fz-wash-zone { position: absolute; touch-action: none; cursor: grab; z-index: 2; }
+.fz-wash-zone.is-happy .fz-press { animation: fz-bounce .7s cubic-bezier(.3,1.5,.5,1); }
+.fz-rain line { stroke-dasharray: 24 18; animation: fz-rain .5s linear infinite; }
+@keyframes fz-rain { to { stroke-dashoffset: -84; } }
+
 /* Sessão de cuidado (esfregar) */
 .fz-care-zone { position: absolute; z-index: 20; touch-action: none; cursor: grab; transform: translate(-50%, -100%); transition: left 2.4s linear, top 2.4s linear; }
 .fz-care-tool { position: absolute; pointer-events: none; transform: translate(-50%, -60%); filter: drop-shadow(0 8px 6px var(--shadow)); }

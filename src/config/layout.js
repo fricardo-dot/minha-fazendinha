@@ -18,7 +18,10 @@ export const LAYOUT = {
     { x: 200, y: 640 },
     { x: 400, y: 660 },
   ],
-  pasture: { x: 590, y: 470, w: 460, h: 260 },
+  pigpenArea: { x: 600, y: 200, w: 400, h: 160 },   // morro atrás do pasto (mais ao fundo, fora do alcance da vaca)
+  pigpen: { x: 620, y: 250, w: 360, h: 95 },         // onde o porquinho anda (pés em 283..345)
+  pig: { x: 830, y: 335 },
+  pasture: { x: 590, y: 560, w: 460, h: 170 },      // a vaca fica na frente do pasto (pés em 620..720)
   cow: { x: 800, y: 590 },
   barn: { x: 1090, y: 250, w: 470, h: 380 },
   cornPile: { x: 1150, y: 660 },
@@ -38,5 +41,6 @@ export const LAYOUT = {
     coop2: { x: 470, y: 470 },
     flowers: { x: 860, y: 900 },
     barn2: { x: 1060, y: 470 },
+    pigpen: { x: 800, y: 352 },
   },
 };

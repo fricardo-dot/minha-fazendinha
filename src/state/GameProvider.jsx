@@ -196,12 +196,14 @@ export function GameProvider({ children }) {
       else fx.burst({ x: from.x, y: from.y, kind: 'sparkle' });
     },
 
-    openMilking(animalId) {
+    /** Abre o minigame de coleta do animal (ordenha, banho do porquinho…). */
+    openCollectMinigame(animalId) {
       const a = stateRef.current.animals[animalId];
-      if (!a || a.state !== 'ready') return false;
+      const id = a && BALANCE.animals[a.type].collectMinigame;
+      if (!a || a.state !== 'ready' || !id) return false;
       careRef.current = null;
       setCare(null);
-      setMinigame({ id: 'milking', animalId });
+      setMinigame({ id, animalId });
       return true;
     },
 
@@ -251,8 +253,8 @@ export function GameProvider({ children }) {
       if (at) fx.fly({ kind: c.tool, from: at, to: { x: LAYOUT.careKit.x + (c.tool === 'sponge' ? -40 : 40), y: LAYOUT.careKit.y - 20 } });
     },
 
-    /** Chamado pelo minigame de ordenha quando o balde enche. */
-    finishMilking(animalId) {
+    /** Chamado pelo minigame de coleta ao terminar (balde cheio, porquinho limpo…). */
+    finishCollect(animalId) {
       const a = stateRef.current.animals[animalId];
       if (!a || a.state !== 'ready') return;
       dispatch({ type: 'COLLECT', animalId, now: Date.now() });
@@ -265,7 +267,7 @@ export function GameProvider({ children }) {
     buyUpgrade(id, at) {
       const s = stateRef.current;
       if (!canAfford(s, id)) { audio.play('oops'); setCoinFlash((n) => n + 1); return false; }
-      dispatch({ type: 'BUY_UPGRADE', id });
+      dispatch({ type: 'BUY_UPGRADE', id, now: Date.now() });
       audio.play('build');
       fx.burst({ x: at.x, y: at.y, kind: 'poof' });
       setTimeout(() => fx.burst({ x: at.x, y: at.y - 60, kind: 'confetti' }), 250);

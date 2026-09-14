@@ -40,7 +40,9 @@ Atualizações: o service worker guarda a casca do app; a versão do cache é o 
 - Milharal com 3 canteiros: plantar → regar → crescer → colher (o milho alimenta as galinhas).
 - Cesta de coleta e caminhão de entregas (ovos e leite viram moedas).
 - Minigame da cesta de ovos quando há 4+ ovos na entrega (bônus).
-- 3 melhorias com mudança física: galinheiro pintado, canteiro de flores, celeiro com silo.
+- Minigame de lavar o porquinho (esponja + chuveiro).
+- 4 melhorias com mudança física: galinheiro pintado, canteiro de flores, celeiro com silo e o chiqueiro no morro (que traz o porquinho).
+- Porquinho: come milho, rola na lama e fica enlameado; tocar nele abre o minigame de lavar (esfregar a esponja até a lama sumir e abrir o chuveiro). Limpo, fareja uma trufa que vai para a cesta.
 - Cuidados com gesto de esfregar: os animais ficam de vez em quando empoeirados (pedem esponja) ou despenteados (pedem escova); a criança leva a ferramenta do kit até o animal e esfrega com o dedo até ele ficar limpo e brilhante.
 - Amizade por animal (corações) com 3 estágios visuais: sino / ninho bonito / pintinho / coroa de flores.
 - Dicas automáticas após alguns segundos sem toque; área dos pais por toque longo (3 s).

@@ -1,11 +1,12 @@
 // A fazenda é o menu principal: tudo acontece tocando nela.
 import { useState } from 'react';
-import { ANIMALS } from '../config/content.js';
+import { unlockedAnimalDefs } from '../config/content.js';
 import { useGame } from '../state/GameProvider.jsx';
 import { Backdrop } from './Backdrop.jsx';
 import { Coop } from '../buildings/Coop.jsx';
 import { Barn } from '../buildings/Barn.jsx';
 import { FlowerBed } from '../buildings/FlowerBed.jsx';
+import { Pigpen } from '../buildings/Pigpen.jsx';
 import { CornField } from '../buildings/CornField.jsx';
 import { CornPile, HayBale, WateringCan } from '../buildings/FoodSources.jsx';
 import { CareKit } from '../buildings/CareKit.jsx';
@@ -24,6 +25,7 @@ export function Farm() {
     <>
       <Backdrop />
       <FlowerBed planted={state.upgrades.flowers} />
+      {state.upgrades.pigpen && <Pigpen />}
       <Coop upgraded={state.upgrades.coop2} />
       <Barn upgraded={state.upgrades.barn2} />
       <UpgradeSigns />
@@ -34,7 +36,7 @@ export function Farm() {
       <CareKit />
       <Basket />
       <DeliveryBox />
-      {Object.keys(ANIMALS).map((id) => <AnimalActor key={id} id={id} />)}
+      {unlockedAnimalDefs(state).map((d) => <AnimalActor key={d.id} id={d.id} />)}
       <CoinJar />
       <ParentButton onOpen={() => setParentOpen(true)} />
       <MinigameHost />

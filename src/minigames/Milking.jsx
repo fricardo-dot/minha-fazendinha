@@ -44,7 +44,7 @@ export function Milking({ params, onDone, onExit }) {
 
   const finish = () => {
     setDone(true);
-    actions.finishMilking(params.animalId);
+    actions.finishCollect(params.animalId);
     fx.burst({ x: BUCKET.x, y: BUCKET.y - 60, kind: 'confetti' });
     setTimeout(() => {
       fx.fly({ kind: 'milk', from: { x: 800, y: 500 }, to: { x: LAYOUT.basket.x, y: LAYOUT.basket.y - 30 }, duration: 800, onArrive: () => audio.play('happy', 0) });

@@ -78,6 +78,15 @@ export function ItemIcon({ kind, size = 72 }) {
           </g>
         </svg>
       );
+    case 'truffle':
+      return (
+        <svg viewBox="0 0 64 64" style={s}>
+          <path d="M12 30c0-14 9-22 20-22s20 8 20 22c0 6-4 10-8 10H20c-4 0-8-4-8-10z" fill="#8E5E36" stroke={STROKE} strokeWidth="3" strokeLinejoin="round" />
+          <path d="M24 40h16v10a8 8 0 0 1-16 0z" fill="#E8C466" stroke={STROKE} strokeWidth="3" strokeLinejoin="round" />
+          <g fill="#FFF6E4"><circle cx="24" cy="24" r="4" /><circle cx="36" cy="18" r="3.5" /><circle cx="42" cy="30" r="3" /></g>
+          <path d="M20 20c2-6 6-9 10-10" fill="none" stroke="#B9804F" strokeWidth="3" strokeLinecap="round" />
+        </svg>
+      );
     case 'seed':
       return (
         <svg viewBox="0 0 64 64" style={s}>

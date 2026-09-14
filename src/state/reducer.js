@@ -3,7 +3,8 @@ import { BALANCE } from '../config/balance.js';
 import { tickAnimal, tickPlot, feedAnimal, collectFromAnimal, applyCare } from '../rules/production.js';
 import { basketValue, upgradeById } from '../rules/economy.js';
 import { canPet } from '../rules/friendship.js';
-import { createInitialState } from './initialState.js';
+import { createInitialState, makeAnimal } from './initialState.js';
+import { ANIMALS, PRODUCT_KEY } from '../config/content.js';
 
 const F = BALANCE.friendship;
 
@@ -111,14 +112,16 @@ export function reducer(state, action) {
       const a = state.animals[animalId];
       if (!a || a.state !== 'ready') return state;
       const product = BALANCE.animals[a.type].product;
+      const key = PRODUCT_KEY[product];
+      const viaMinigame = !!BALANCE.animals[a.type].collectMinigame; // ordenhar/lavar é cuidado: dá coração
       const next = updateAnimal(state, animalId, (an) => ({
         ...collectFromAnimal(an, now),
-        hearts: product === 'milk' ? an.hearts + F.perCare : an.hearts,
-        lastCareAt: product === 'milk' ? now : an.lastCareAt,
+        hearts: viaMinigame ? an.hearts + F.perCare : an.hearts,
+        lastCareAt: viaMinigame ? now : an.lastCareAt,
       }));
       return {
         ...next,
-        basket: { ...next.basket, [product === 'egg' ? 'eggs' : 'milk']: next.basket[product === 'egg' ? 'eggs' : 'milk'] + 1 },
+        basket: { ...next.basket, [key]: (next.basket[key] || 0) + 1 },
       };
     }
 
@@ -128,7 +131,7 @@ export function reducer(state, action) {
       return {
         ...state,
         coins: state.coins + value,
-        basket: { eggs: 0, milk: 0 },
+        basket: { eggs: 0, milk: 0, truffles: 0 },
         stats: {
           ...state.stats,
           deliveries: state.stats.deliveries + 1,
@@ -143,7 +146,12 @@ export function reducer(state, action) {
     case 'BUY_UPGRADE': {
       const up = upgradeById(action.id);
       if (!up || state.upgrades[action.id] || state.coins < up.cost) return state;
-      return { ...state, coins: state.coins - up.cost, upgrades: { ...state.upgrades, [action.id]: true } };
+      let next = { ...state, coins: state.coins - up.cost, upgrades: { ...state.upgrades, [action.id]: true } };
+      if (up.unlocksAnimal && ANIMALS[up.unlocksAnimal]) {
+        // O animal chega "novo": timers contam a partir de agora
+        next = { ...next, animals: { ...next.animals, [up.unlocksAnimal]: makeAnimal(ANIMALS[up.unlocksAnimal], action.now || Date.now()) } };
+      }
+      return next;
     }
 
     case 'SET_SETTING':

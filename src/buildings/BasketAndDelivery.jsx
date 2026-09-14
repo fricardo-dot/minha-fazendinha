@@ -9,7 +9,8 @@ import { basketIsEmpty } from '../rules/economy.js';
 export function Basket() {
   const { state, actions, hint } = useGame();
   const { eggs, milk } = state.basket;
-  const total = eggs + milk;
+  const truffles = state.basket.truffles || 0;
+  const total = eggs + milk + truffles;
   const [pop, setPop] = useState(false);
   const prev = useRef(total);
   useEffect(() => {
@@ -28,6 +29,7 @@ export function Basket() {
   const cls = ['fz-obj', pop && 'is-popping', isHover && 'is-drop-hover', wantsHeld && 'wants-held', hint === 'basket' && 'is-hinted'].filter(Boolean).join(' ');
   const shownEggs = Math.min(eggs, 6);
   const shownMilk = Math.min(milk, 3);
+  const shownTruffles = Math.min(truffles, 3);
 
   return (
     <div ref={ref} className={cls} style={{ left: LAYOUT.basket.x, top: LAYOUT.basket.y, width: 190, height: 150 }}>
@@ -49,6 +51,11 @@ export function Basket() {
         {Array.from({ length: shownMilk }, (_, i) => (
           <div key={`m${i}`} style={{ position: 'absolute', left: 120 - i * 26 + (shownEggs > 4 ? 30 : 0), top: 18 - i * 4 }}>
             <ItemIcon kind="milk" size={52} />
+          </div>
+        ))}
+        {Array.from({ length: shownTruffles }, (_, i) => (
+          <div key={`t${i}`} style={{ position: 'absolute', left: 30 + i * 30, top: 30 + (i % 2) * 6 }}>
+            <ItemIcon kind="truffle" size={40} />
           </div>
         ))}
         <svg width="190" height="150" viewBox="0 0 190 150" style={{ position: 'absolute', left: 0, top: 0, pointerEvents: 'none' }} aria-hidden="true">

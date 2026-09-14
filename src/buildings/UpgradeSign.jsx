@@ -27,6 +27,16 @@ const ICONS = {
       ))}
     </g>
   ),
+  pigpen: (
+    <g transform="translate(0 2)">
+      <ellipse cx="0" cy="22" rx="34" ry="8" fill="#8E5E36" />
+      <circle cx="0" cy="0" r="20" fill="#FFB5C2" stroke="#5B3D2E" strokeWidth="3" />
+      <path d="M-18 -12c-4-10 2-16 8-14 2 4 0 10-4 12zM18 -12c4-10-2-16-8-14-2 4 0 10 4 12z" fill="#F58FA5" stroke="#5B3D2E" strokeWidth="2.5" strokeLinejoin="round" />
+      <ellipse cx="0" cy="6" rx="10" ry="7" fill="#F58FA5" stroke="#5B3D2E" strokeWidth="2.5" />
+      <circle cx="-3.5" cy="6" r="1.8" fill="#5B3D2E" /><circle cx="3.5" cy="6" r="1.8" fill="#5B3D2E" />
+      <circle cx="-8" cy="-4" r="2.6" fill="#5B3D2E" /><circle cx="8" cy="-4" r="2.6" fill="#5B3D2E" />
+    </g>
+  ),
   barn2: (
     <g transform="translate(-6 -2)">
       <path d="M-30 30 V4 L-22 -8 L0 -20 L22 -8 L30 4 V30 Z" fill="#E0574B" stroke="#5B3D2E" strokeWidth="3" strokeLinejoin="round" />
