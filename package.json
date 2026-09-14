@@ -1,0 +1,20 @@
+{
+  "name": "minha-fazendinha",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Jogo infantil de fazenda para tablet (protótipo V1)",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs --serve",
+    "icons": "node tools/make-icons.mjs"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "sharp": "^0.33.5"
+  }
+}

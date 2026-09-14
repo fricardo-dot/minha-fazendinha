@@ -1,0 +1,327 @@
+/* ─────────────────────────────────────────────────────────────
+   MINHA FAZENDINHA — estilos
+   Mundo visual único (não segue tema escuro): cores sempre explícitas.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --sky: #C9ECF7;
+  --sky-deep: #9DDBF0;
+  --grass: #8FD36A;
+  --grass-deep: #67B94A;
+  --soil: #B9804F;
+  --soil-wet: #8E5E36;
+  --wood: #D19A5B;
+  --wood-dark: #A8703A;
+  --barn-red: #E0574B;
+  --sun: #FFD24A;
+  --heart: #FF6F91;
+  --ink: #5B3D2E;
+  --cream: #FFF6E4;
+  --white: #FFFFFF;
+  --water: #6ECBF5;
+  --shadow: rgba(60, 40, 20, .18);
+  --font: 'Baloo 2', ui-rounded, 'Segoe UI Rounded', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body, .fz-root { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+body {
+  background: linear-gradient(180deg, var(--sky) 0%, var(--sky) 42%, var(--grass) 42%, var(--grass-deep) 100%);
+  font-family: var(--font);
+  color: var(--ink);
+  -webkit-user-select: none; user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+.fz-viewport {
+  position: fixed; inset: 0;
+  overflow: hidden;
+  touch-action: none;
+}
+.fz-stage {
+  position: absolute; left: 0; top: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+  overflow: hidden;
+}
+
+/* Objetos posicionados no palco: (left, top) é o CENTRO do objeto */
+.fz-obj { position: absolute; transform: translate(-50%, -50%); }
+.fz-obj.anchor-bottom { transform: translate(-50%, -100%); }
+.fz-box { position: absolute; }
+
+/* Área de toque inflada (invisível) */
+.fz-touch {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 40px;
+  cursor: pointer;
+}
+
+svg { display: block; overflow: visible; }
+
+/* ── Interação ─────────────────────────────────────────────── */
+.fz-tappable { cursor: pointer; }
+.fz-tappable:active .fz-press { transform: scale(.94); }
+.fz-press { transition: transform .12s ease; transform-origin: 50% 90%; }
+
+.is-hinted .fz-press, .is-hinted.fz-hint-self {
+  animation: fz-hint 1.1s ease-in-out infinite;
+}
+@keyframes fz-hint {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(255, 210, 74, 0)); }
+  50% { transform: scale(1.08) rotate(-2deg); filter: drop-shadow(0 0 18px rgba(255, 210, 74, .95)); }
+}
+
+/* Lembrete suave (ex.: caminhão quando a cesta tem algo) */
+.is-nudging .fz-press { animation: fz-nudge 2.6s ease-in-out infinite; }
+@keyframes fz-nudge {
+  0%, 70%, 100% { transform: translateY(0) rotate(0); }
+  78% { transform: translateY(-12px) rotate(-2deg); }
+  86% { transform: translateY(0) rotate(2deg); }
+  93% { transform: translateY(-6px) rotate(0); }
+}
+
+.is-drop-hover .fz-press { transform: scale(1.1); filter: drop-shadow(0 0 16px rgba(255, 255, 255, .9)); }
+.wants-held .fz-press { animation: fz-wants 1.2s ease-in-out infinite; }
+@keyframes fz-wants {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(255,255,255,0)); }
+  50% { filter: drop-shadow(0 0 14px rgba(255,255,255,.9)); }
+}
+
+.fz-held {
+  position: absolute; z-index: 60;
+  pointer-events: none;
+  transform: translate(-50%, -62%);
+  filter: drop-shadow(0 10px 8px var(--shadow));
+}
+.fz-held-inner { transform: scale(1.05); }
+.fz-held.is-sticky .fz-held-inner { animation: fz-bob 1s ease-in-out infinite; }
+.fz-held.is-returning { transition: left var(--return-ms) cubic-bezier(.3,1.4,.5,1), top var(--return-ms) cubic-bezier(.3,1.4,.5,1); }
+.fz-held.is-returning .fz-held-inner { animation: fz-wobble var(--return-ms) ease-in-out; }
+@keyframes fz-bob { 0%,100% { transform: translateY(0) scale(1.05);} 50% { transform: translateY(-10px) scale(1.1);} }
+@keyframes fz-wobble { 0% { transform: rotate(0);} 25% { transform: rotate(-14deg);} 55% { transform: rotate(12deg);} 80% { transform: rotate(-6deg);} 100% { transform: rotate(0);} }
+
+/* Reação "não, obrigado" (item errado) */
+.is-shaking .fz-press { animation: fz-shake .5s ease-in-out; }
+@keyframes fz-shake { 0%,100% { transform: translateX(0);} 20% { transform: translateX(-10px) rotate(-3deg);} 40% { transform: translateX(10px) rotate(3deg);} 60% { transform: translateX(-7px);} 80% { transform: translateX(7px);} }
+
+/* Pulinho feliz */
+.is-bouncing .fz-press { animation: fz-bounce .55s cubic-bezier(.3,1.5,.5,1); }
+@keyframes fz-bounce { 0% { transform: translateY(0) scaleY(1);} 30% { transform: translateY(-34px) scaleY(1.06);} 60% { transform: translateY(0) scaleY(.94);} 80% { transform: translateY(-10px);} 100% { transform: translateY(0);} }
+
+/* Pop ao receber um item (cesta, pilha, pote) */
+.is-popping .fz-press { animation: fz-pop .45s cubic-bezier(.3,1.6,.5,1); }
+@keyframes fz-pop { 0% { transform: scale(1);} 40% { transform: scale(1.14, .9);} 70% { transform: scale(.96, 1.06);} 100% { transform: scale(1);} }
+
+/* ── Animais ───────────────────────────────────────────────── */
+.fz-animal { position: absolute; transform: translate(-50%, -100%); transition: left 2.4s linear, top 2.4s linear; }
+.fz-animal.no-walk { transition: none; }
+.fz-animal-flip { transition: transform .25s ease; transform-origin: 50% 100%; }
+.fz-animal-flip.face-left { transform: scaleX(-1); }
+.fz-animal-body { transform-origin: 50% 100%; }
+.fz-animal.is-walking .fz-animal-body { animation: fz-walk .5s ease-in-out infinite; }
+@keyframes fz-walk { 0%,100% { transform: translateY(0) rotate(0);} 50% { transform: translateY(-8px) rotate(2deg);} }
+.fz-animal.is-idle .fz-animal-body { animation: fz-breathe 3s ease-in-out infinite; }
+@keyframes fz-breathe { 0%,100% { transform: scale(1, 1);} 50% { transform: scale(1.015, .985);} }
+.fz-animal.is-eating .fz-animal-body { animation: fz-peck .5s ease-in-out infinite; }
+@keyframes fz-peck { 0%,100% { transform: rotate(0);} 50% { transform: rotate(9deg) translateY(4px);} }
+.fz-animal.is-sleeping .fz-animal-body { animation: fz-sleep 3.2s ease-in-out infinite; }
+@keyframes fz-sleep { 0%,100% { transform: scale(1, .97);} 50% { transform: scale(1.02, 1);} }
+.fz-animal.is-happy .fz-animal-body { animation: fz-bounce .6s cubic-bezier(.3,1.5,.5,1); }
+
+.fz-blink { transform-origin: center; animation: fz-blink 4.5s infinite; }
+@keyframes fz-blink { 0%, 94%, 100% { transform: scaleY(1);} 96% { transform: scaleY(.05);} }
+
+.fz-zzz { position: absolute; left: 70%; top: 6%; animation: fz-zzz 2.4s ease-in-out infinite; font-weight: 800; color: #6A8CB0; font-size: 34px; }
+@keyframes fz-zzz { 0% { transform: translate(0,0) scale(.7); opacity: 0;} 30% { opacity: 1;} 100% { transform: translate(24px,-46px) scale(1.1); opacity: 0;} }
+
+/* Balão de pensamento (pedido do animal) */
+.fz-bubble {
+  position: absolute; left: 50%; top: -18px;
+  transform: translate(-40%, -100%);
+  width: 118px; height: 104px;
+  animation: fz-float 2.6s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes fz-float { 0%,100% { transform: translate(-40%, -100%) translateY(0);} 50% { transform: translate(-40%, -100%) translateY(-7px);} }
+.fz-bubble-cloud { position: absolute; inset: 0; }
+.fz-bubble-icon { position: absolute; left: 50%; top: 44%; transform: translate(-50%, -50%); }
+
+/* Medidor de corações */
+.fz-heartmeter {
+  position: absolute; left: 50%; top: -12px;
+  transform: translate(-50%, -100%);
+  display: flex; gap: 6px;
+  padding: 8px 12px; border-radius: 999px;
+  background: rgba(255,255,255,.85);
+  box-shadow: 0 6px 14px var(--shadow);
+  animation: fz-meter-in .35s cubic-bezier(.3,1.5,.5,1);
+  pointer-events: none;
+}
+@keyframes fz-meter-in { from { transform: translate(-50%, -80%) scale(.4); opacity: 0;} to { transform: translate(-50%, -100%) scale(1); opacity: 1;} }
+.fz-heartmeter .h { position: relative; width: 34px; height: 34px; }
+.fz-heartmeter .h .fill { position: absolute; inset: 0; overflow: hidden; }
+
+/* Ovo no chão */
+.fz-egg { position: absolute; transform: translate(-50%, -50%); animation: fz-egg-in .5s cubic-bezier(.3,1.6,.5,1); }
+@keyframes fz-egg-in { from { transform: translate(-50%, -50%) scale(0);} to { transform: translate(-50%, -50%) scale(1);} }
+
+/* ── Plantação ─────────────────────────────────────────────── */
+.fz-plot .plant { transform-origin: 50% 100%; }
+.fz-plot.is-ready .plant { animation: fz-sway 1.6s ease-in-out infinite; filter: drop-shadow(0 0 12px rgba(255, 230, 120, .95)); }
+@keyframes fz-sway { 0%,100% { transform: rotate(-3deg);} 50% { transform: rotate(3deg);} }
+.fz-plot .plant.grow-in { animation: fz-grow .6s cubic-bezier(.3,1.5,.5,1); }
+@keyframes fz-grow { from { transform: scale(.6);} to { transform: scale(1);} }
+.fz-plot .drop { animation: fz-drop-fall 1.1s ease-in infinite; opacity: 0; }
+@keyframes fz-drop-fall { 0% { transform: translateY(-14px); opacity: 0;} 30% { opacity: .9;} 100% { transform: translateY(14px); opacity: 0;} }
+
+/* Rabo da vaca (estágio 3) abana */
+.fz-tail { animation: fz-tail 1.6s ease-in-out infinite; }
+@keyframes fz-tail { 0%,100% { transform: rotate(0);} 50% { transform: rotate(-14deg);} }
+
+/* Flores balançam */
+.fz-flower { transform-origin: 50% 100%; animation: fz-sway 3s ease-in-out infinite; }
+
+/* ── HUD ───────────────────────────────────────────────────── */
+.fz-hud { position: absolute; z-index: 40; }
+.fz-coinjar { position: absolute; }
+.fz-coinjar.is-flashing { animation: fz-flash .6s ease; }
+@keyframes fz-flash { 0%,100% { filter: none;} 50% { filter: brightness(1.5) drop-shadow(0 0 16px var(--sun)); } }
+.fz-coin-count {
+  position: absolute; left: 96px; top: 96px;
+  min-width: 44px; height: 44px; padding: 0 12px;
+  border-radius: 999px; background: var(--white);
+  border: 3px solid var(--ink);
+  font-size: 30px; font-weight: 800; line-height: 38px; text-align: center;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Botão dos pais (discreto) */
+.fz-parent-btn {
+  position: absolute; width: 64px; height: 64px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,.35);
+  opacity: .55;
+  cursor: pointer;
+}
+.fz-parent-btn svg { position: absolute; inset: 0; }
+.fz-parent-btn .ring { stroke-dasharray: 176; stroke-dashoffset: 176; }
+.fz-parent-btn.is-holding .ring { transition: stroke-dashoffset var(--hold-ms) linear; stroke-dashoffset: 0; }
+
+/* Painel dos pais */
+.fz-overlay {
+  position: absolute; inset: 0; z-index: 80;
+  background: rgba(60, 40, 20, .45);
+  display: grid; place-items: center;
+}
+.fz-panel {
+  width: 720px; max-width: 92%;
+  background: var(--cream);
+  border: 6px solid var(--ink);
+  border-radius: 36px;
+  padding: 36px 40px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.25);
+  font-size: 28px;
+}
+.fz-panel h2 { margin: 0 0 20px; font-size: 40px; font-weight: 800; text-wrap: balance; }
+.fz-panel .row { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 14px 0; border-top: 3px dashed rgba(91,61,46,.18); }
+.fz-panel .row:first-of-type { border-top: 0; }
+.fz-panel .label { display: flex; align-items: center; gap: 16px; font-weight: 700; }
+.fz-toggle {
+  width: 120px; height: 62px; border-radius: 999px;
+  background: #C9B8A6; border: 4px solid var(--ink);
+  position: relative; cursor: pointer; transition: background .2s;
+}
+.fz-toggle::after {
+  content: ''; position: absolute; top: 4px; left: 4px;
+  width: 46px; height: 46px; border-radius: 50%; background: var(--white);
+  border: 3px solid var(--ink); transition: left .2s;
+}
+.fz-toggle.on { background: var(--grass); }
+.fz-toggle.on::after { left: 62px; }
+.fz-btn {
+  font: inherit; font-weight: 800; font-size: 26px;
+  padding: 14px 28px; border-radius: 999px;
+  border: 4px solid var(--ink); background: var(--white); color: var(--ink);
+  cursor: pointer;
+}
+.fz-btn.danger { background: #FFD5D0; }
+.fz-btn.danger.confirm { background: var(--barn-red); color: var(--white); }
+.fz-btn.primary { background: var(--sun); }
+.fz-btn:focus-visible, .fz-toggle:focus-visible { outline: 5px solid #4FB3E0; outline-offset: 3px; }
+.fz-panel .version { margin-top: 18px; font-size: 20px; opacity: .6; }
+
+/* Aviso para girar (retrato) */
+.fz-rotate {
+  position: fixed; right: 12px; bottom: 12px; z-index: 90;
+  width: 84px; height: 84px; border-radius: 24px;
+  background: rgba(255,255,255,.85); border: 3px solid var(--ink);
+  display: grid; place-items: center;
+  pointer-events: none;
+}
+.fz-rotate svg { animation: fz-rotate 2.2s ease-in-out infinite; }
+@keyframes fz-rotate { 0%,20% { transform: rotate(0);} 60%,100% { transform: rotate(90deg);} }
+
+/* ── Efeitos ───────────────────────────────────────────────── */
+.fz-fx-layer { position: absolute; inset: 0; pointer-events: none; z-index: 70; }
+.fz-flight { position: absolute; transform: translate(-50%, -50%); animation: fz-fly var(--dur) cubic-bezier(.4,0,.6,1) forwards; }
+@keyframes fz-fly { to { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))); } }
+.fz-flight-arc { animation: fz-arc var(--dur) ease-in-out forwards; }
+@keyframes fz-arc { 0% { transform: translateY(0) scale(1);} 50% { transform: translateY(-90px) scale(1.15);} 100% { transform: translateY(0) scale(.9);} }
+
+.fz-burst { position: absolute; width: 0; height: 0; }
+.fz-particle {
+  position: absolute; left: 0; top: 0;
+  display: block;
+  animation: fz-particle var(--dur) cubic-bezier(.2,.8,.4,1) var(--delay) both;
+}
+@keyframes fz-particle {
+  0% { transform: translate(-50%, -50%) translate(0,0) scale(0) rotate(0); opacity: 1; }
+  15% { transform: translate(-50%, -50%) translate(calc(var(--tx) * .3), calc(var(--ty) * .3)) scale(var(--s)) rotate(calc(var(--rot) * .3)); opacity: 1; }
+  100% { transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(calc(var(--s) * .6)) rotate(var(--rot)); opacity: 0; }
+}
+.fz-burst-confetti .fz-particle { width: 16px; height: 22px; background: var(--c); border-radius: 4px; }
+.fz-burst-confetti .fz-particle:nth-child(3n) { border-radius: 50%; width: 14px; height: 14px; }
+.fz-burst-poof .fz-particle { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,.9); }
+.fz-burst-splash .fz-particle { width: 12px; height: 18px; border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%; background: var(--water); }
+
+/* Minigames */
+.fz-minigame {
+  position: absolute; inset: 0; z-index: 50;
+  background: linear-gradient(180deg, #DDF3FB 0%, #DDF3FB 55%, #A9E08A 55%, #7FCB62 100%);
+  animation: fz-mg-in .4s cubic-bezier(.3,1.4,.5,1);
+}
+@keyframes fz-mg-in { from { transform: scale(.85); opacity: 0;} to { transform: scale(1); opacity: 1;} }
+.fz-mg-exit {
+  position: absolute; left: 36px; top: 30px;
+  width: 104px; height: 104px; border-radius: 50%;
+  background: var(--white); border: 5px solid var(--ink);
+  display: grid; place-items: center; cursor: pointer; z-index: 5;
+  box-shadow: 0 8px 0 rgba(0,0,0,.12);
+}
+.fz-mg-exit:active { transform: translateY(4px); box-shadow: 0 4px 0 rgba(0,0,0,.12); }
+.fz-mg-done { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+.fz-mg-done .big { animation: fz-pop-in .6s cubic-bezier(.3,1.6,.5,1) both; }
+@keyframes fz-pop-in { from { transform: scale(0) rotate(-20deg); } to { transform: scale(1) rotate(0); } }
+
+.fz-teat { cursor: pointer; }
+.fz-teat.is-squirting .teat-shape { animation: fz-squeeze .3s ease; }
+@keyframes fz-squeeze { 50% { transform: scaleY(.7) translateY(6px);} }
+.fz-milk-stream { animation: fz-stream .45s ease-out both; transform-origin: 50% 0; }
+@keyframes fz-stream { 0% { transform: scaleY(0); opacity: 1;} 60% { transform: scaleY(1); opacity: 1;} 100% { transform: scaleY(1) translateY(20px); opacity: 0;} }
+
+.fz-mg-egg { position: absolute; transform: translate(-50%, -50%); cursor: pointer; touch-action: none; }
+.fz-mg-egg.is-dragging { z-index: 5; filter: drop-shadow(0 12px 8px var(--shadow)); }
+.fz-mg-egg.is-returning { transition: left .5s cubic-bezier(.3,1.5,.5,1), top .5s cubic-bezier(.3,1.5,.5,1); }
+.fz-mg-egg.is-returning .fz-press { animation: fz-wobble .5s ease-in-out; }
+.fz-mg-egg.is-placed { animation: fz-pop .4s ease; }
+
+/* Movimento reduzido: sem animações infinitas */
+@media (prefers-reduced-motion: reduce) {
+  .fz-animal .fz-animal-body, .is-hinted .fz-press, .wants-held .fz-press, .fz-bubble, .fz-flower,
+  .fz-plot.is-ready .plant, .fz-held.is-sticky .fz-held-inner, .fz-blink, .fz-zzz { animation: none !important; }
+}

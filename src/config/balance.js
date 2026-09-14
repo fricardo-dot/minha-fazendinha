@@ -1,0 +1,79 @@
+// ─────────────────────────────────────────────────────────────
+// BALANCEAMENTO — todos os números ajustáveis do jogo ficam aqui.
+// Tempos em milissegundos. Nada disto é lido de outro lugar.
+// ─────────────────────────────────────────────────────────────
+export const BALANCE = {
+  animals: {
+    chicken: {
+      eatMs: 2000,          // duração da animação de comer
+      produceMs: 8000,      // depois de comer, tempo até o ovo aparecer
+      hungryAgainMs: 4000,  // depois de coletar o ovo, tempo até ter fome de novo
+      food: 'corn',
+      product: 'egg',
+    },
+    cow: {
+      eatMs: 2500,
+      produceMs: 6000,      // depois de comer, tempo até o leite ficar pronto
+      hungryAgainMs: 5000,
+      food: 'hay',
+      product: 'milk',
+    },
+    sleepAfterIdleMs: 25000, // animal alimentado e sem interação por este tempo → cochila
+    petCooldownMs: 8000,     // intervalo mínimo entre corações por carinho
+  },
+
+  crops: {
+    corn: {
+      stageMs: 3000,        // tempo entre cada estágio: semente → broto → crescendo → pronto
+      yield: 1,             // milhos por colheita
+      plots: 3,
+    },
+  },
+
+  inventory: {
+    startCorn: 2,           // milho no celeiro ao começar (para alimentar já no início)
+    maxCornShown: 6,        // quantidade máxima desenhada na pilha
+    hayInfinite: true,      // V1: feno nunca acaba
+  },
+
+  rewards: {
+    egg: 1,                 // moedas por ovo entregue
+    milk: 3,                // moedas por leite entregue
+    eggMinigameBonus: 2,    // bônus ao concluir o minigame da cesta
+    eggMinigameThreshold: 4,// ovos na cesta para o minigame aparecer
+    maxCoinsShown: 24,      // moedas desenhadas no pote (visual)
+  },
+
+  friendship: {
+    perCare: 1,             // corações ganhos por cuidado (alimentar, carinho, ordenhar)
+    stage2At: 5,            // corações para estágio 2 (sino / ninho bonito)
+    stage3At: 12,           // corações para estágio 3 (laço / pintinho)
+  },
+
+  minigames: {
+    milking: { squirtsToFill: 8, dragThreshold: 40 },
+    eggBasket: { maxEggs: 6 },
+  },
+
+  hints: {
+    idleMs: 6000,           // segundos sem toque até a dica aparecer
+    repeatMs: 3000,         // intervalo entre pulsos da dica enquanto ocioso
+  },
+
+  anim: {
+    eatMs: 2000,
+    celebrateSmallMs: 900,
+    celebrateBigMs: 1800,
+    flyMs: 650,
+    returnMs: 420,
+    heartMeterMs: 2200,
+  },
+
+  parent: {
+    holdMs: 3000,           // segurar o ícone por este tempo para abrir a área dos pais
+  },
+
+  save: {
+    debounceMs: 500,
+  },
+};
