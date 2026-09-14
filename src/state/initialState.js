@@ -35,8 +35,8 @@ export function createInitialState() {
     plots: Array.from({ length: BALANCE.crops.corn.plots }, () => ({
       stage: 'empty', watered: false, nextStageAt: null,
     })),
-    basket: { eggs: 0, milk: 0, truffles: 0 },
-    upgrades: { coop2: false, flowers: false, barn2: false, pigpen: false },
+    basket: { eggs: 0, milk: 0, truffles: 0, wool: 0 },
+    upgrades: { coop2: false, flowers: false, barn2: false, pigpen: false, sheepPen: false },
     stats: { deliveries: 0, minigames: 0, harvests: 0 },
     settings: { sound: true, music: true },
     createdAt: Date.now(),

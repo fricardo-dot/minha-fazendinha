@@ -9,6 +9,7 @@ import { useStage } from '../components/Stage.jsx';
 import { audio } from '../audio/AudioManager.js';
 import { ItemIcon } from '../components/ItemIcon.jsx';
 import { ExitButton } from './MinigameHost.jsx';
+import { capturePointer } from '../interaction/pointer.js';
 
 const INK = '#5B3D2E';
 const BASKET = { x: 1100, y: 520, w: 420, h: 300 };
@@ -51,7 +52,7 @@ export function EggBasket({ onDone, onExit }) {
 
   const onDown = (e, id) => {
     e.preventDefault();
-    e.currentTarget.setPointerCapture(e.pointerId);
+    capturePointer(e);
     const p = stage.toLogical(e.clientX, e.clientY);
     dragRef.current = { id, pointerId: e.pointerId, dx: 0, dy: 0 };
     setEggs((es) => es.map((eg) => (eg.id === id ? { ...eg, dragging: true, returning: false, x: p.x, y: p.y } : eg)));

@@ -28,7 +28,8 @@ Jogo para criança de 3 anos em tablet touch. Estas regras valem para qualquer a
 - Timers são timestamps absolutos (`rules/production.js`); o `TICK` só compara com `now`. Isso garante progresso sem punição ao voltar depois de horas.
 - Persistência só pela interface de `persistence/storage.js`. Mudou o formato do save: subir `SCHEMA_VERSION` e tratar em `migrate()`.
 - Novo minigame: componente com props `{ params, onDone, onExit }` + entrada em `minigames/registry.js`. Sair antes nunca é castigo.
-- Animal cuja coleta é um minigame (vaca → ordenha, porco → banho): `collectMinigame` e `readyIcon` em `balance.animals[tipo]`; o minigame chama `actions.finishCollect(animalId)` ao terminar. Produto novo = `PRODUCT_KEY` + `PRODUCT_REWARD` em content.js e campo na cesta (`initialState` + `DELIVER`).
+- Em minigames de gesto (banho, tosa), calcule o progresso fora do atualizador do `setState` e só então dispare `fx`/`audio` — efeito dentro do updater gera "Cannot update a component while rendering" e roda duas vezes no StrictMode.
+- Animal cuja coleta é um minigame (vaca → ordenha, porco → banho, ovelha → tosa): `collectMinigame` e `readyIcon` em `balance.animals[tipo]`; o minigame chama `actions.finishCollect(animalId)` ao terminar. Produto novo = `PRODUCT_KEY` + `PRODUCT_REWARD` em content.js e campo na cesta (`initialState` + `DELIVER`).
 - Animal desbloqueável: `requires: '<upgradeId>'` em `ANIMALS` + `unlocksAnimal` na melhoria. Renderização e dicas só olham `unlockedAnimalDefs(state)`; `depth` define a ordem de desenho (fundo primeiro).
 - Áudio só via `audio.play('nome')`; trocar síntese por arquivos é mudança interna em `audio/`.
 - Cuidado por gesto (lavar/escovar): a sessão vive em `GameProvider` (`care`, `startCare/careStroke/cancelCare`); a regra fica em `rules/production.js` (`applyCare`). Nova ferramenta = entrada em `CARE_TOOLS` (content.js) + ícone + fonte no `CareKit`.

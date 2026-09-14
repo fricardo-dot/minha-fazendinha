@@ -10,7 +10,8 @@ export function Basket() {
   const { state, actions, hint } = useGame();
   const { eggs, milk } = state.basket;
   const truffles = state.basket.truffles || 0;
-  const total = eggs + milk + truffles;
+  const woolCount = state.basket.wool || 0;
+  const total = eggs + milk + truffles + woolCount;
   const [pop, setPop] = useState(false);
   const prev = useRef(total);
   useEffect(() => {
@@ -30,6 +31,7 @@ export function Basket() {
   const shownEggs = Math.min(eggs, 6);
   const shownMilk = Math.min(milk, 3);
   const shownTruffles = Math.min(truffles, 3);
+  const shownWool = Math.min(woolCount, 3);
 
   return (
     <div ref={ref} className={cls} style={{ left: LAYOUT.basket.x, top: LAYOUT.basket.y, width: 190, height: 150 }}>
@@ -51,6 +53,11 @@ export function Basket() {
         {Array.from({ length: shownMilk }, (_, i) => (
           <div key={`m${i}`} style={{ position: 'absolute', left: 120 - i * 26 + (shownEggs > 4 ? 30 : 0), top: 18 - i * 4 }}>
             <ItemIcon kind="milk" size={52} />
+          </div>
+        ))}
+        {Array.from({ length: shownWool }, (_, i) => (
+          <div key={`w${i}`} style={{ position: 'absolute', left: 96 + i * 26, top: 26 - (i % 2) * 6 }}>
+            <ItemIcon kind="wool" size={44} />
           </div>
         ))}
         {Array.from({ length: shownTruffles }, (_, i) => (

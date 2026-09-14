@@ -11,6 +11,7 @@ import { useAnimalBehavior } from './useAnimalBehavior.js';
 import { ChickenSprite, Nest } from './Chicken.jsx';
 import { CowSprite } from './Cow.jsx';
 import { PigSprite } from './Pig.jsx';
+import { SheepSprite } from './Sheep.jsx';
 import { ItemIcon } from '../components/ItemIcon.jsx';
 import { HeartShape } from '../components/Fx.jsx';
 import { stageFor, progressFor } from '../rules/friendship.js';
@@ -20,11 +21,13 @@ const SPRITES = {
   chicken: { Sprite: ChickenSprite, w: 200, h: 200, zone: 'coopYard' },
   cow: { Sprite: CowSprite, w: 300, h: 240, zone: 'pasture' },
   pig: { Sprite: PigSprite, w: 200, h: 150, zone: 'pigpen' },
+  sheep: { Sprite: SheepSprite, w: 200, h: 170, zone: 'sheepPen' },
 };
 
 function homeOf(def) {
   if (def.type === 'chicken') return LAYOUT.chickenSlots[def.slot];
   if (def.type === 'pig') return LAYOUT.pig;
+  if (def.type === 'sheep') return LAYOUT.sheep;
   return LAYOUT.cow;
 }
 
@@ -59,7 +62,7 @@ export function AnimalActor({ id }) {
   const prevState = useRef(animal.state);
   useEffect(() => {
     if (prevState.current !== animal.state) {
-      if (animal.state === 'ready') audio.play(def.type === 'cow' ? 'cow' : 'chicken', 300);
+      if (animal.state === 'ready') audio.play(BALANCE.animals[def.type].sound || 'chicken', 300);
       prevState.current = animal.state;
     }
   }, [animal.state, def.type]);
@@ -110,6 +113,8 @@ export function AnimalActor({ id }) {
   const mudBath = !!BALANCE.animals[def.type].mudBath;
   const muddy = mudBath ? (animal.state === 'ready' ? 1 : animal.state === 'producing' ? 0.6 : 0) : 0;
   const rolling = mudBath && animal.state === 'producing';
+  // Lã da ovelha: curta depois da tosa, crescendo enquanto produz, bem fofa quando pronta
+  const wool = animal.state === 'ready' ? 1 : animal.state === 'producing' ? 0.65 : 0.25;
   const moodCls = animal.state === 'eating' ? 'is-eating' : rolling ? 'is-rolling' : mood === 'sleep' ? 'is-sleeping' : mood === 'walk' ? 'is-walking' : 'is-idle';
   const cls = ['fz-animal', 'fz-tappable', moodCls, reaction === 'happy' && 'is-happy', reaction === 'shake' && 'is-shaking', isHover && 'is-drop-hover', wantsHeld && animal.state === 'hungry' && 'wants-held', hint === `animal:${id}` && 'is-hinted'].filter(Boolean).join(' ');
 
@@ -120,7 +125,7 @@ export function AnimalActor({ id }) {
         <div className="fz-press" style={{ width: cfg.w, height: cfg.h }}>
           <div className={`fz-animal-flip ${facing < 0 ? 'face-left' : ''}`}>
             <div className="fz-animal-body">
-              <cfg.Sprite expression={rolling ? 'happy' : expression} stage={stage} dirt={dirtOpacity} scruff={scruffOpacity} muddy={muddy} />
+              <cfg.Sprite expression={rolling ? 'happy' : expression} stage={stage} dirt={dirtOpacity} scruff={scruffOpacity} muddy={muddy} wool={wool} />
             </div>
           </div>
         </div>
@@ -132,7 +137,8 @@ export function AnimalActor({ id }) {
         ))}
         {wantIcon && <ThoughtBubble icon={wantIcon} />}
         {heartMeter && heartMeter.animalId === id && <HeartMeter hearts={animal.hearts} />}
-        <div className="fz-touch" style={{ width: cfg.w + 60, height: cfg.h + 40 }} />
+        {/* Área de toque: sobra só para os lados e para baixo, para não roubar toques de quem está atrás */}
+        <div className="fz-touch" style={{ width: cfg.w + 60, height: cfg.h + 20, top: 'calc(50% + 10px)' }} />
       </div>
       {inCare && <CareOverlay animalId={id} pos={pos} width={cfg.w + 140} height={cfg.h + 90} />}
     </>

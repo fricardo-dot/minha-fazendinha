@@ -192,6 +192,43 @@ export const SOUNDS = {
       osc.start(t + dt); osc.stop(end + 0.02);
     });
   },
+  // Ovelha: "béé" com vibrato rápido
+  sheep(ctx, out) {
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator(); const lfo = ctx.createOscillator(); const lfoGain = ctx.createGain();
+    const filt = ctx.createBiquadFilter(); const g = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(330, t); osc.frequency.linearRampToValueAtTime(260, t + 0.5);
+    lfo.frequency.value = 9; lfoGain.gain.value = 14;
+    lfo.connect(lfoGain); lfoGain.connect(osc.frequency);
+    filt.type = 'bandpass'; filt.frequency.value = 900; filt.Q.value = 1.4;
+    osc.connect(filt); filt.connect(g); g.connect(out);
+    const end = env(ctx, g, t, { a: 0.05, d: 0.15, s: 0.7, hold: 0.25, r: 0.15, peak: 0.16 });
+    osc.start(t); lfo.start(t); osc.stop(end + 0.05); lfo.stop(end + 0.05);
+  },
+  // Porco: "oinc" curto e anasalado
+  pig(ctx, out) {
+    const t = ctx.currentTime;
+    [0, 0.2].forEach((dt) => {
+      const osc = ctx.createOscillator(); const filt = ctx.createBiquadFilter(); const g = ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(240, t + dt); osc.frequency.exponentialRampToValueAtTime(130, t + dt + 0.14);
+      filt.type = 'bandpass'; filt.frequency.value = 700; filt.Q.value = 2.5;
+      osc.connect(filt); filt.connect(g); g.connect(out);
+      const end = env(ctx, g, t + dt, { a: 0.01, d: 0.08, s: 0.3, r: 0.06, peak: 0.16 });
+      osc.start(t + dt); osc.stop(end + 0.02);
+    });
+  },
+  // Máquina de tosar: zumbido curto
+  buzz(ctx, out) {
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator(); const filt = ctx.createBiquadFilter(); const g = ctx.createGain();
+    osc.type = 'sawtooth'; osc.frequency.value = 95;
+    filt.type = 'lowpass'; filt.frequency.value = 700;
+    osc.connect(filt); filt.connect(g); g.connect(out);
+    const end = env(ctx, g, t, { a: 0.01, d: 0.06, s: 0.5, hold: 0.1, r: 0.06, peak: 0.08 });
+    osc.start(t); osc.stop(end + 0.02);
+  },
   // Ordenha: esguicho curto
   squirt(ctx, out) {
     const t = ctx.currentTime;

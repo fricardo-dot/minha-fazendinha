@@ -131,7 +131,7 @@ export function reducer(state, action) {
       return {
         ...state,
         coins: state.coins + value,
-        basket: { eggs: 0, milk: 0, truffles: 0 },
+        basket: { eggs: 0, milk: 0, truffles: 0, wool: 0 },
         stats: {
           ...state.stats,
           deliveries: state.stats.deliveries + 1,

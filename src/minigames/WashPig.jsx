@@ -11,6 +11,7 @@ import { audio } from '../audio/AudioManager.js';
 import { ItemIcon } from '../components/ItemIcon.jsx';
 import { PigSprite, PIG_MUD_SPOTS } from '../animals/Pig.jsx';
 import { ExitButton } from './MinigameHost.jsx';
+import { capturePointer } from '../interaction/pointer.js';
 
 const INK = '#5B3D2E';
 const PIG = { x: 700, y: 640, scale: 3.1, w: 200, h: 150 }; // centro-base do porquinho no palco
@@ -41,7 +42,7 @@ export function WashPig({ params, onDone, onExit }) {
   const onDown = (e) => {
     if (phase !== 'scrub') return;
     e.preventDefault();
-    e.currentTarget.setPointerCapture(e.pointerId);
+    capturePointer(e);
     const p = localFrom(e);
     last.current = p;
     const s = stageFrom(p);

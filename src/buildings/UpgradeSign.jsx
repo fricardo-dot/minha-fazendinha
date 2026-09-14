@@ -37,6 +37,16 @@ const ICONS = {
       <circle cx="-8" cy="-4" r="2.6" fill="#5B3D2E" /><circle cx="8" cy="-4" r="2.6" fill="#5B3D2E" />
     </g>
   ),
+  sheepPen: (
+    <g transform="translate(0 2)">
+      <g fill="#FFF6E4" stroke="#5B3D2E" strokeWidth="2.5">
+        <circle cx="-14" cy="2" r="13" /><circle cx="4" cy="-4" r="15" /><circle cx="18" cy="6" r="12" /><circle cx="-4" cy="12" r="12" />
+      </g>
+      <ellipse cx="22" cy="-2" rx="9" ry="11" fill="#4A3B36" stroke="#5B3D2E" strokeWidth="2.5" />
+      <circle cx="19" cy="-5" r="2.2" fill="#fff" /><circle cx="26" cy="-5" r="2.2" fill="#fff" />
+      <g fill="#4A3B36"><rect x="-16" y="20" width="6" height="12" rx="3" /><rect x="2" y="20" width="6" height="12" rx="3" /><rect x="14" y="20" width="6" height="12" rx="3" /></g>
+    </g>
+  ),
   barn2: (
     <g transform="translate(-6 -2)">
       <path d="M-30 30 V4 L-22 -8 L0 -20 L22 -8 L30 4 V30 Z" fill="#E0574B" stroke="#5B3D2E" strokeWidth="3" strokeLinejoin="round" />

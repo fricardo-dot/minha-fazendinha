@@ -5,6 +5,7 @@ import { BALANCE } from '../config/balance.js';
 import { useGame } from '../state/GameProvider.jsx';
 import { useStage } from '../components/Stage.jsx';
 import { ItemIcon } from '../components/ItemIcon.jsx';
+import { capturePointer } from '../interaction/pointer.js';
 
 export function CareOverlay({ animalId, pos, width, height }) {
   const { care, actions } = useGame();
@@ -51,7 +52,7 @@ export function CareOverlay({ animalId, pos, width, height }) {
   const onDown = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    e.currentTarget.setPointerCapture(e.pointerId);
+    capturePointer(e);
     const p = localFrom(e);
     last.current = p;
     setTool(p);

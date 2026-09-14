@@ -34,5 +34,5 @@ export function areasOfHint(hint, animalsById) {
   }
 }
 
-const SIGN_AREAS = { coop2: 'yard', flowers: 'yard', barn2: 'yard', pigpen: 'pasture' };
+const SIGN_AREAS = { coop2: 'yard', flowers: 'yard', barn2: 'yard', pigpen: 'pasture', sheepPen: 'pasture' };
 const SOURCE_AREAS = { corn: ['yard', 'pasture'], hay: ['yard', 'pasture'], water: ['yard'] };

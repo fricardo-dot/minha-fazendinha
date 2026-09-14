@@ -10,6 +10,7 @@ import { useStage } from '../components/Stage.jsx';
 import { audio } from '../audio/AudioManager.js';
 import { ItemIcon } from '../components/ItemIcon.jsx';
 import { ExitButton } from './MinigameHost.jsx';
+import { capturePointer } from '../interaction/pointer.js';
 
 const INK = '#5B3D2E';
 const TEATS = [{ x: 690, y: 560 }, { x: 760, y: 572 }, { x: 830, y: 572 }, { x: 900, y: 560 }];
@@ -153,7 +154,7 @@ function Teat({ x, y, onSquirt, disabled }) {
 
   const onDown = (e) => {
     e.preventDefault();
-    e.currentTarget.setPointerCapture(e.pointerId);
+    capturePointer(e);
     fired.current = false;
     start.current = stage.toLogical(e.clientX, e.clientY);
   };

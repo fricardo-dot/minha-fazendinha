@@ -40,7 +40,10 @@ export const LAYOUT = {
   flowerbed: { x: 620, y: 590, w: 380, h: 160 },
 
   // ── PASTO ─────────────────────────────────────────────────
-  pasture: { x: 100, y: 560, w: 800, h: 190 },   // onde a vaca anda (pés em 626..750)
+  pasture: { x: 100, y: 610, w: 800, h: 140 },   // onde a vaca anda (pés em 659..750), longe do curral do morro
+  sheepPenArea: { x: 120, y: 240, w: 520, h: 200 }, // curral da ovelha no morro
+  sheepPen: { x: 160, y: 300, w: 440, h: 110 },     // onde a ovelha anda (pés em 338..410)
+  sheep: { x: 380, y: 400 },
   pastureFence: { x: 80, y: 470, w: 840, h: 300 },
   cow: { x: 460, y: 680 },
   pastureFeed: { corn: { x: 300, y: 900 }, hay: { x: 120, y: 895 } }, // estação de ração
@@ -60,5 +63,6 @@ export const LAYOUT = {
     flowers: { x: 810, y: 780 },
     barn2: { x: 1060, y: 470 },
     pigpen: { x: 1250, y: 720 },
+    sheepPen: { x: 380, y: 432 },
   },
 };

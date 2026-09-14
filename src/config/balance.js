@@ -10,6 +10,7 @@ export const BALANCE = {
       hungryAgainMs: 4000,  // depois de coletar o ovo, tempo até ter fome de novo
       food: 'corn',
       product: 'egg',
+      sound: 'chicken',
     },
     cow: {
       eatMs: 2500,
@@ -19,6 +20,7 @@ export const BALANCE = {
       product: 'milk',
       collectMinigame: 'milking',
       readyIcon: 'milk',
+      sound: 'cow',
     },
     pig: {
       eatMs: 2500,
@@ -29,6 +31,17 @@ export const BALANCE = {
       mudBath: true,        // a sujeira do porco é a lama do ciclo (minigame), não o timer de esponja
       collectMinigame: 'washPig',
       readyIcon: 'sponge',  // o que ele "pede" quando está pronto
+      sound: 'pig',
+    },
+    sheep: {
+      eatMs: 2500,
+      produceMs: 8000,      // depois de comer, a lã cresce até ficar bem fofa
+      hungryAgainMs: 5000,
+      food: 'hay',
+      product: 'wool',      // a tosa rende um novelo
+      collectMinigame: 'shear',
+      readyIcon: 'shears',
+      sound: 'sheep',
     },
     sleepAfterIdleMs: 25000, // animal alimentado e sem interação por este tempo → cochila
     petCooldownMs: 8000,     // intervalo mínimo entre corações por carinho
@@ -65,6 +78,7 @@ export const BALANCE = {
     egg: 1,                 // moedas por ovo entregue
     milk: 3,                // moedas por leite entregue
     truffle: 4,             // moedas por trufa entregue
+    wool: 5,                // moedas por novelo entregue
     eggMinigameBonus: 2,    // bônus ao concluir o minigame da cesta
     eggMinigameThreshold: 4,// ovos na cesta para o minigame aparecer
     maxCoinsShown: 24,      // moedas desenhadas no pote (visual)
@@ -80,6 +94,7 @@ export const BALANCE = {
     milking: { squirtsToFill: 8, dragThreshold: 40 },
     eggBasket: { maxEggs: 6 },
     washPig: { scrubRadius: 46, scrubPerUnit: 0.012, rinseMs: 1800 }, // raio da esponja e velocidade de limpeza (coords do porquinho)
+    shear: { radius: 44, perUnit: 0.0055 },                            // raio da máquina e velocidade da tosa (coords da ovelha)
   },
 
   hints: {

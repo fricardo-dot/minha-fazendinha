@@ -53,8 +53,10 @@ Pote de moedas, cesta, caminhão de entregas e kit de cuidados acompanham a cria
 - Cesta de coleta e caminhão de entregas (ovos e leite viram moedas).
 - Minigame da cesta de ovos quando há 4+ ovos na entrega (bônus).
 - Minigame de lavar o porquinho (esponja + chuveiro).
-- 4 melhorias com mudança física: galinheiro pintado, canteiro de flores, celeiro com silo e o chiqueiro no morro (que traz o porquinho).
+- Minigame de tosar a ovelha (máquina de tosar sobre os tufos de lã).
+- 5 melhorias com mudança física: galinheiro pintado, canteiro de flores, celeiro com silo, chiqueiro (traz o porquinho) e curral no morro (traz a ovelha).
 - Porquinho: come milho, rola na lama e fica enlameado; tocar nele abre o minigame de lavar (esfregar a esponja até a lama sumir e abrir o chuveiro). Limpo, fareja uma trufa que vai para a cesta.
+- Ovelha (curral no morro do Pasto, comprável): come feno, a lã cresce até ficar bem fofa e ela pede a tesoura; tocar nela abre o minigame de tosar (passar a máquina sobre a lã, tufos voam para o cesto). A tosa rende um novelo para a cesta.
 - Cuidados com gesto de esfregar: os animais ficam de vez em quando empoeirados (pedem esponja) ou despenteados (pedem escova); a criança leva a ferramenta do kit até o animal e esfrega com o dedo até ele ficar limpo e brilhante.
 - Amizade por animal (corações) com 3 estágios visuais: sino / ninho bonito / pintinho / coroa de flores.
 - Dicas automáticas após alguns segundos sem toque; área dos pais por toque longo (3 s).

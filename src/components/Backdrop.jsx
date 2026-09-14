@@ -74,8 +74,7 @@ function PastureDetails() {
   const f = LAYOUT.pastureFence;
   return (
     <g>
-      {/* Espaços reservados no morro: ovelha e estábulo */}
-      <ellipse cx="300" cy="440" rx="120" ry="26" fill="#B8E39B" stroke="#FFFFFF" strokeWidth="4" strokeDasharray="12 14" opacity=".3" />
+      {/* Espaço reservado no morro: estábulo */}
       <ellipse cx="1250" cy="430" rx="130" ry="26" fill="#B8E39B" stroke="#FFFFFF" strokeWidth="4" strokeDasharray="12 14" opacity=".3" />
       {/* Caminho ligando ao quintal */}
       <path d="M0 830 C 200 810, 500 790, 940 800 S 1400 860, 1600 900" fill="none" stroke="#E9C9A0" strokeWidth="60" strokeLinecap="round" opacity=".7" />

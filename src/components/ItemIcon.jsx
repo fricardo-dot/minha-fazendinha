@@ -87,6 +87,27 @@ export function ItemIcon({ kind, size = 72 }) {
           <path d="M20 20c2-6 6-9 10-10" fill="none" stroke="#B9804F" strokeWidth="3" strokeLinecap="round" />
         </svg>
       );
+    case 'wool':
+      return (
+        <svg viewBox="0 0 64 64" style={s}>
+          <circle cx="32" cy="34" r="24" fill="#FFF6E4" stroke={STROKE} strokeWidth="3" />
+          <g fill="none" stroke="#E3CFA8" strokeWidth="3" strokeLinecap="round">
+            <path d="M12 26c10 4 30 4 40 0M10 38c12 4 32 4 44 0M20 14c4 12 4 28 0 40M44 14c-4 12-4 28 0 40" />
+          </g>
+          <path d="M50 24c6-8 10-6 12-2" fill="none" stroke={STROKE} strokeWidth="3" strokeLinecap="round" />
+        </svg>
+      );
+    case 'shears':
+      return (
+        <svg viewBox="0 0 64 64" style={s}>
+          <rect x="22" y="26" width="24" height="32" rx="8" fill="#E0574B" stroke={STROKE} strokeWidth="3" />
+          <rect x="18" y="14" width="32" height="16" rx="5" fill="#DCE6EE" stroke={STROKE} strokeWidth="3" />
+          <g stroke={STROKE} strokeWidth="2.5" strokeLinecap="round">
+            <line x1="22" y1="10" x2="22" y2="14" /><line x1="28" y1="8" x2="28" y2="14" /><line x1="34" y1="8" x2="34" y2="14" /><line x1="40" y1="8" x2="40" y2="14" /><line x1="46" y1="10" x2="46" y2="14" />
+          </g>
+          <circle cx="34" cy="44" r="4" fill="#FFD24A" stroke={STROKE} strokeWidth="2" />
+        </svg>
+      );
     case 'seed':
       return (
         <svg viewBox="0 0 64 64" style={s}>

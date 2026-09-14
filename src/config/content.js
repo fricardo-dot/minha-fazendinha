@@ -11,6 +11,7 @@ export const ANIMALS = {
   chicken2: { id: 'chicken2', type: 'chicken', home: 'coop', slot: 1, depth: 2, area: 'yard' },
   cow1: { id: 'cow1', type: 'cow', home: 'pasture', slot: 0, depth: 1, area: 'pasture' },
   pig1: { id: 'pig1', type: 'pig', home: 'pigpen', slot: 0, requires: 'pigpen', depth: 2, area: 'pasture' }, // só depois de comprar o chiqueiro
+  sheep1: { id: 'sheep1', type: 'sheep', home: 'sheepPen', slot: 0, requires: 'sheepPen', depth: 0, area: 'pasture' }, // curral no morro
 };
 
 /** Animais visíveis/ativos no estado atual (respeita desbloqueios). */
@@ -30,6 +31,7 @@ export const UPGRADES = [
   { id: 'flowers', cost: 8, target: 'flowerbed', area: 'yard', effect: 'Canteiro de flores no quintal' },
   { id: 'barn2', cost: 12, target: 'barn', area: 'yard', effect: 'Celeiro maior com silo' },
   { id: 'pigpen', cost: 14, target: 'pigpen', area: 'pasture', effect: 'Chiqueiro no pasto e o porquinho chega', unlocksAnimal: 'pig1' },
+  { id: 'sheepPen', cost: 16, target: 'sheepPen', area: 'pasture', effect: 'Curral no morro e a ovelha chega', unlocksAnimal: 'sheep1' },
 ];
 
 // Ferramentas de cuidado: item que a criança carrega → tipo de cuidado no animal.
@@ -49,7 +51,8 @@ export const PRODUCT_REWARD = {
   egg: BALANCE.rewards.egg,
   milk: BALANCE.rewards.milk,
   truffle: BALANCE.rewards.truffle,
+  wool: BALANCE.rewards.wool,
 };
 
 // Produto → campo da cesta
-export const PRODUCT_KEY = { egg: 'eggs', milk: 'milk', truffle: 'truffles' };
+export const PRODUCT_KEY = { egg: 'eggs', milk: 'milk', truffle: 'truffles', wool: 'wool' };

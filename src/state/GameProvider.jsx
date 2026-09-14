@@ -123,7 +123,7 @@ export function GameProvider({ children }) {
       const now = Date.now();
       const gained = canPet(a, now);
       dispatch({ type: 'PET', animalId, now });
-      audio.play(a.type === 'cow' ? 'cow' : 'chicken', 350);
+      audio.play(BALANCE.animals[a.type].sound || 'chicken', 350);
       if (gained) { showHearts(animalId, at); checkLevelUp(animalId, a, at); }
       else fx.burst({ x: at.x, y: at.y - 50, kind: 'sparkle', size: 0.6 });
       return gained;
