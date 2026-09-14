@@ -170,6 +170,28 @@ export const SOUNDS = {
     tone(ctx, out, { type: 'sine', f0: f, f1: f * 1.8, t0: t, dur: 0.09, peak: 0.16 });
     tone(ctx, out, { type: 'sine', f0: f * 0.7, f1: f * 1.3, t0: t + 0.07, dur: 0.07, peak: 0.1 });
   },
+  // Sapo: "croac" grave e engraçado
+  frog(ctx, out) {
+    const t = ctx.currentTime;
+    tone(ctx, out, { type: 'sawtooth', f0: 140, f1: 90, t0: t, dur: 0.16, peak: 0.16 });
+    tone(ctx, out, { type: 'sawtooth', f0: 170, f1: 110, t0: t + 0.18, dur: 0.2, peak: 0.16 });
+  },
+  // Pato: "quá quá" anasalado
+  duck(ctx, out) {
+    const t = ctx.currentTime;
+    [0, 0.16].forEach((dt) => {
+      const osc = ctx.createOscillator();
+      const filt = ctx.createBiquadFilter();
+      const g = ctx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(420, t + dt);
+      osc.frequency.exponentialRampToValueAtTime(300, t + dt + 0.12);
+      filt.type = 'bandpass'; filt.frequency.value = 900; filt.Q.value = 3;
+      osc.connect(filt); filt.connect(g); g.connect(out);
+      const end = env(ctx, g, t + dt, { a: 0.01, d: 0.08, s: 0.3, r: 0.05, peak: 0.16 });
+      osc.start(t + dt); osc.stop(end + 0.02);
+    });
+  },
   // Ordenha: esguicho curto
   squirt(ctx, out) {
     const t = ctx.currentTime;

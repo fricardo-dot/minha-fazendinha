@@ -46,6 +46,31 @@ body {
   overflow: hidden;
 }
 
+/* ── Mapa da fazenda ──────────────────────────────────────── */
+.fz-map-strip {
+  position: absolute; left: 0; top: 0; height: 1000px;
+  display: flex;
+  transition: transform .55s cubic-bezier(.4, 0, .2, 1);
+  will-change: transform;
+}
+.fz-area { position: relative; flex: none; width: 1600px; height: 1000px; overflow: hidden; }
+/* Áreas fora da tela: animações pausadas (economia de bateria/CPU no tablet) */
+.fz-area:not(.is-current) * { animation-play-state: paused !important; }
+.fz-nav { z-index: 45; }
+.fz-persistent { position: absolute; left: 0; top: 0; width: 1600px; height: 1000px; pointer-events: none; z-index: 30; }
+.fz-persistent > * { pointer-events: auto; }
+
+/* Lago: pato nadando de um lado para o outro */
+.fz-duck-lane { position: absolute; height: 100px; pointer-events: none; }
+.fz-duck { position: absolute; left: 0; top: 0; width: 120px; height: 100px; pointer-events: auto; animation: fz-swim 14s ease-in-out infinite; }
+@keyframes fz-swim {
+  0% { transform: translateX(0) scaleX(1); }
+  48% { transform: translateX(var(--lane)) scaleX(1); }
+  50% { transform: translateX(var(--lane)) scaleX(-1); }
+  98% { transform: translateX(0) scaleX(-1); }
+  100% { transform: translateX(0) scaleX(1); }
+}
+
 /* Objetos posicionados no palco: (left, top) é o CENTRO do objeto */
 .fz-obj { position: absolute; transform: translate(-50%, -50%); }
 .fz-obj.anchor-bottom { transform: translate(-50%, -100%); }
@@ -345,5 +370,6 @@ svg { display: block; overflow: visible; }
 /* Movimento reduzido: sem animações infinitas */
 @media (prefers-reduced-motion: reduce) {
   .fz-animal .fz-animal-body, .is-hinted .fz-press, .wants-held .fz-press, .fz-bubble, .fz-flower,
-  .fz-plot.is-ready .plant, .fz-held.is-sticky .fz-held-inner, .fz-blink, .fz-zzz { animation: none !important; }
+  .fz-plot.is-ready .plant, .fz-held.is-sticky .fz-held-inner, .fz-blink, .fz-zzz, .fz-duck { animation: none !important; }
+  .fz-map-strip { transition: none; }
 }

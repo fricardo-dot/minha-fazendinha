@@ -34,9 +34,21 @@ Este repositório já traz um workflow (`.github/workflows/pages.yml`) que publi
 Ícones: `public/icons/` (gerados por `npm run icons` a partir de um SVG próprio em `tools/make-icons.mjs`).
 Atualizações: o service worker guarda a casca do app; a versão do cache é o hash do bundle, então cada build novo troca o cache na abertura seguinte.
 
+## Mapa da fazenda
+
+A fazenda é um mapa com áreas lado a lado; a criança passa de uma para outra pelas setas grandes nas bordas (placas redondas com o desenho da área vizinha) ou deslizando o dedo.
+
+- **Quintal** (início): galinheiro, milharal, celeiro com milho e feno, canteiro de flores.
+- **Pasto**: vaca com espaço para passear, chiqueiro (comprável) com o porquinho, estação de ração (mesmo milho do celeiro, feno à vontade).
+- **Lago**: cenário calmo com sapo e pato para tocar; píer reservado para pescar.
+
+Pote de moedas, cesta, caminhão de entregas e kit de cuidados acompanham a criança em todas as áreas. Um item "na mão" (milho, feno, esponja…) também: dá para pegar milho no Quintal, tocar na seta e entregar ao porquinho no Pasto. Quando a próxima coisa a fazer está em outra área, a seta para lá pulsa.
+
+Áreas ficam em `src/areas/` e são registradas em `src/config/areas.js`.
+
 ## O que existe na V1
 
-- 2 galinhas (comem milho → ovo no ninho), 1 vaca (come feno → leite via minigame de ordenha).
+- 2 galinhas no Quintal (comem milho → ovo no ninho), 1 vaca no Pasto (come feno → leite via minigame de ordenha).
 - Milharal com 3 canteiros: plantar → regar → crescer → colher (o milho alimenta as galinhas).
 - Cesta de coleta e caminhão de entregas (ovos e leite viram moedas).
 - Minigame da cesta de ovos quando há 4+ ovos na entrega (bônus).

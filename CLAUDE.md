@@ -11,6 +11,15 @@ Jogo para criança de 3 anos em tablet touch. Estas regras valem para qualquer a
 - Toda interação deve funcionar por **arrastar E por tocar-e-tocar** (ver `interaction/DragContext.jsx`). Nunca depender de hover, teclado ou double tap.
 - Áreas de toque infladas (`.fz-touch`), mínimo `MIN_TOUCH` em `config/layout.js`. Ao posicionar algo novo, conferir que a área de toque não cai dentro da de outro objeto (o desenhado por último ganha o toque) — foi o que aconteceu com a placa do chiqueiro sobre a vaca.
 
+## Mapa por áreas
+
+- A fazenda é um `FarmMap` com áreas lado a lado (`config/areas.js` + `src/areas/*`). Cada área é um palco 1600×1000 próprio; posições em `config/layout.js` são locais à área. Novo conteúdo entra numa área existente ou numa área nova (entrada em `AREAS`, componente, `areasOfHint`).
+- Itens persistentes (HUD, cesta, caminhão, kit) ficam em `Farm.jsx`, fora do mapa, e existem em todas as áreas: nunca posicionar coisas de área no canto inferior direito (x ≥ 850, y ≥ 780).
+- Animais têm `area` em `ANIMALS`; placas têm `area` em `UPGRADES`. Dicas de outra área acendem a seta (`areasOfHint`).
+- Voos de efeitos (`fx.fly`) usam coordenadas do palco: só partem/chegam em itens da área atual ou persistentes.
+- Elementos que devem receber o toque mesmo com um item "na mão" (setas do mapa) levam `data-keep-held`.
+- Animações das áreas fora da tela ficam pausadas via CSS (`.fz-area:not(.is-current)`).
+
 ## Contratos de código
 
 - **Números só em `src/config/balance.js`** (tempos, custos, recompensas, corações, animações). Nunca espalhar valores pelo código.

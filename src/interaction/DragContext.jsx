@@ -111,6 +111,8 @@ export function DragProvider({ children }) {
     const onDownSticky = (e) => {
       const h = heldRef.current;
       if (!h || !h.sticky) return;
+      // Setas do mapa (e o que mais tiver data-keep-held): o item continua na mão e o toque passa
+      if (e.target && e.target.closest && e.target.closest('[data-keep-held]')) return;
       e.stopPropagation();
       e.preventDefault();
       // O clique que vem depois deste toque não deve acionar o alvo (ex.: carinho por cima da entrega)

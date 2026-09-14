@@ -8,7 +8,7 @@ import { useGame } from '../state/GameProvider.jsx';
 import { ItemIcon } from '../components/ItemIcon.jsx';
 import { audio } from '../audio/AudioManager.js';
 
-export function CornPile() {
+export function CornPile({ pos = LAYOUT.cornPile }) {
   const { state, hint } = useGame();
   const { startHold } = useDrag();
   const count = state.inventory.corn;
@@ -29,7 +29,7 @@ export function CornPile() {
   const cls = ['fz-obj', 'fz-tappable', hint === 'source:corn' && count > 0 && 'is-hinted', pop && 'is-popping', shake && 'is-shaking'].filter(Boolean).join(' ');
 
   return (
-    <div className={cls} style={{ left: LAYOUT.cornPile.x, top: LAYOUT.cornPile.y, width: 150, height: 120 }} onPointerDown={onDown}>
+    <div className={cls} style={{ left: pos.x, top: pos.y, width: 150, height: 120 }} onPointerDown={onDown}>
       <div className="fz-press" style={{ width: 150, height: 120, position: 'relative' }}>
         <svg width="150" height="120" viewBox="0 0 150 120" aria-hidden="true">
           <ellipse cx="75" cy="112" rx="66" ry="9" fill="rgba(60,40,20,.15)" />
@@ -48,12 +48,12 @@ export function CornPile() {
   );
 }
 
-export function HayBale() {
+export function HayBale({ pos = LAYOUT.hayBale }) {
   const { hint } = useGame();
   const { startHold } = useDrag();
   const cls = ['fz-obj', 'fz-tappable', hint === 'source:hay' && 'is-hinted'].filter(Boolean).join(' ');
   return (
-    <div className={cls} style={{ left: LAYOUT.hayBale.x, top: LAYOUT.hayBale.y, width: 150, height: 120 }} onPointerDown={(e) => startHold(e, { kind: 'hay' })}>
+    <div className={cls} style={{ left: pos.x, top: pos.y, width: 150, height: 120 }} onPointerDown={(e) => startHold(e, { kind: 'hay' })}>
       <div className="fz-press" style={{ width: 150, height: 120 }}>
         <svg width="150" height="120" viewBox="0 0 150 120" aria-hidden="true">
           <ellipse cx="75" cy="112" rx="66" ry="9" fill="rgba(60,40,20,.15)" />

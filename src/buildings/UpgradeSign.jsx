@@ -47,11 +47,11 @@ const ICONS = {
   ),
 };
 
-export function UpgradeSigns() {
+export function UpgradeSigns({ area }) {
   const { state } = useGame();
   return (
     <>
-      {UPGRADES.filter((u) => !state.upgrades[u.id]).map((u) => <UpgradeSign key={u.id} upgrade={u} />)}
+      {UPGRADES.filter((u) => !state.upgrades[u.id] && (!area || u.area === area)).map((u) => <UpgradeSign key={u.id} upgrade={u} />)}
     </>
   );
 }

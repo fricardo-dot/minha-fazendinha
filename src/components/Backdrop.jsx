@@ -1,29 +1,31 @@
-// Fundo da fazenda: céu, sol, nuvens, colinas, chão, caminho e espaços reservados para expansão.
+// Fundo de cada área: céu, sol, nuvens, colinas, chão (iguais em todas, para dar continuidade)
+// + detalhes por variante (caminho, cercas, espaços reservados).
 import { memo } from 'react';
-import { STAGE } from '../config/layout.js';
+import { STAGE, LAYOUT } from '../config/layout.js';
 
-export const Backdrop = memo(function Backdrop() {
+export const Backdrop = memo(function Backdrop({ variant = 'yard' }) {
   const { width: W, height: H } = STAGE;
+  const gid = `bd-${variant}`;
   return (
     <svg className="fz-box" style={{ left: 0, top: 0 }} width={W} height={H} viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
       <defs>
-        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`${gid}-sky`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#A9DFF3" />
           <stop offset="1" stopColor="#DDF3FB" />
         </linearGradient>
-        <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`${gid}-ground`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#95D66F" />
           <stop offset="1" stopColor="#6DBB4C" />
         </linearGradient>
-        <radialGradient id="sunglow" cx=".5" cy=".5" r=".5">
+        <radialGradient id={`${gid}-sunglow`} cx=".5" cy=".5" r=".5">
           <stop offset="0" stopColor="#FFF3B0" stopOpacity=".9" />
           <stop offset="1" stopColor="#FFF3B0" stopOpacity="0" />
         </radialGradient>
       </defs>
 
       {/* Céu */}
-      <rect width={W} height={H} fill="url(#sky)" />
-      <circle cx="1380" cy="120" r="150" fill="url(#sunglow)" />
+      <rect width={W} height={H} fill={`url(#${gid}-sky)`} />
+      <circle cx="1380" cy="120" r="150" fill={`url(#${gid}-sunglow)`} />
       <circle cx="1380" cy="120" r="62" fill="#FFD24A" stroke="#F0B429" strokeWidth="6" />
 
       {/* Nuvens */}
@@ -44,31 +46,62 @@ export const Backdrop = memo(function Backdrop() {
       <Tree x={1590} y={350} s={.85} />
 
       {/* Chão */}
-      <path d="M0 400 C 300 370, 600 390, 800 380 S 1300 360, 1600 390 L1600 1000 L0 1000 Z" fill="url(#ground)" />
+      <path d="M0 400 C 300 370, 600 390, 800 380 S 1300 360, 1600 390 L1600 1000 L0 1000 Z" fill={`url(#${gid}-ground)`} />
 
-      {/* Espaços reservados para expansão (sutis) */}
-      <g opacity=".35" stroke="#FFFFFF" strokeWidth="4" strokeDasharray="12 14" fill="#C7F0FA">
-        <ellipse cx="1280" cy="445" rx="110" ry="30" />
-      </g>
-      <g opacity=".28" stroke="#FFFFFF" strokeWidth="4" strokeDasharray="12 14" fill="#B8E39B">
-        <ellipse cx="760" cy="430" rx="120" ry="28" />
-      </g>
-
-      {/* Caminho de terra */}
-      <path d="M520 1000 C 560 900, 700 860, 900 830 S 1250 800, 1330 700 S 1420 620, 1470 640" fill="none" stroke="#E9C9A0" strokeWidth="70" strokeLinecap="round" opacity=".85" />
-      <path d="M520 1000 C 560 900, 700 860, 900 830 S 1250 800, 1330 700 S 1420 620, 1470 640" fill="none" stroke="#F4DDBB" strokeWidth="44" strokeLinecap="round" opacity=".9" />
-
-      {/* Tufos de grama */}
-      <g fill="#5FAF42" opacity=".8">
-        <Tuft x={620} y={760} /><Tuft x={1060} y={740} /><Tuft x={980} y={950} /><Tuft x={560} y={520} /><Tuft x={1540} y={820} /><Tuft x={40} y={740} />
-      </g>
-
-      {/* Cerca do pasto */}
-      <Fence x1={590} x2={1050} y={720} />
-      <Fence x1={590} x2={1050} y={478} short />
+      {variant === 'yard' && <YardDetails />}
+      {variant === 'pasture' && <PastureDetails />}
+      {variant === 'lake' && <LakeDetails />}
     </svg>
   );
 });
+
+function YardDetails() {
+  return (
+    <g>
+      {/* Caminho de terra até o celeiro */}
+      <path d="M520 1000 C 560 900, 700 860, 900 830 S 1250 800, 1330 700 S 1420 620, 1470 640" fill="none" stroke="#E9C9A0" strokeWidth="70" strokeLinecap="round" opacity=".85" />
+      <path d="M520 1000 C 560 900, 700 860, 900 830 S 1250 800, 1330 700 S 1420 620, 1470 640" fill="none" stroke="#F4DDBB" strokeWidth="44" strokeLinecap="round" opacity=".9" />
+      {/* Espaço reservado: horta maior */}
+      <ellipse cx="760" cy="470" rx="120" ry="28" fill="#B8E39B" stroke="#FFFFFF" strokeWidth="4" strokeDasharray="12 14" opacity=".3" />
+      <g fill="#5FAF42" opacity=".8">
+        <Tuft x={620} y={520} /><Tuft x={1060} y={740} /><Tuft x={560} y={470} /><Tuft x={1540} y={820} /><Tuft x={40} y={740} /><Tuft x={700} y={960} />
+      </g>
+    </g>
+  );
+}
+
+function PastureDetails() {
+  const f = LAYOUT.pastureFence;
+  return (
+    <g>
+      {/* Espaços reservados no morro: ovelha e estábulo */}
+      <ellipse cx="300" cy="440" rx="120" ry="26" fill="#B8E39B" stroke="#FFFFFF" strokeWidth="4" strokeDasharray="12 14" opacity=".3" />
+      <ellipse cx="1250" cy="430" rx="130" ry="26" fill="#B8E39B" stroke="#FFFFFF" strokeWidth="4" strokeDasharray="12 14" opacity=".3" />
+      {/* Caminho ligando ao quintal */}
+      <path d="M0 830 C 200 810, 500 790, 940 800 S 1400 860, 1600 900" fill="none" stroke="#E9C9A0" strokeWidth="60" strokeLinecap="round" opacity=".7" />
+      <path d="M0 830 C 200 810, 500 790, 940 800 S 1400 860, 1600 900" fill="none" stroke="#F4DDBB" strokeWidth="36" strokeLinecap="round" opacity=".8" />
+      <g fill="#5FAF42" opacity=".8">
+        <Tuft x={60} y={520} /><Tuft x={960} y={470} /><Tuft x={1560} y={760} /><Tuft x={600} y={960} /><Tuft x={40} y={980} />
+      </g>
+      {/* Cerca de trás do pasto (a da frente é desenhada pela área, na frente da vaca) */}
+      <Fence x1={f.x} x2={f.x + f.w} y={f.y + 8} short />
+    </g>
+  );
+}
+
+function LakeDetails() {
+  return (
+    <g>
+      <path d="M1600 830 C 1400 810, 1250 790, 1100 800" fill="none" stroke="#E9C9A0" strokeWidth="60" strokeLinecap="round" opacity=".7" />
+      <path d="M1600 830 C 1400 810, 1250 790, 1100 800" fill="none" stroke="#F4DDBB" strokeWidth="36" strokeLinecap="round" opacity=".8" />
+      <Tree x={1300} y={470} s={1.1} />
+      <Tree x={120} y={430} s={.8} />
+      <g fill="#5FAF42" opacity=".8">
+        <Tuft x={1200} y={560} /><Tuft x={80} y={960} /><Tuft x={1100} y={960} /><Tuft x={700} y={450} />
+      </g>
+    </g>
+  );
+}
 
 function Cloud({ x, y, s }) {
   return (
@@ -97,7 +130,8 @@ function Tuft({ x, y }) {
   return <path transform={`translate(${x} ${y})`} d="M0 0c-4-14-10-20-16-24 8 2 14 8 16 14 2-10 8-18 16-22-8 8-12 18-12 32z" />;
 }
 
-function Fence({ x1, x2, y, short }) {
+/** Cerca de madeira. Exportada para as áreas desenharem a parte da frente por cima dos animais. */
+export function Fence({ x1, x2, y, short }) {
   const posts = [];
   for (let x = x1; x <= x2; x += 92) posts.push(x);
   const h = short ? 44 : 64;
