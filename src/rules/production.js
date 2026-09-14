@@ -17,7 +17,39 @@ export function tickAnimal(animal, now) {
   if (a.state === 'resting' && now >= a.hungryAt) {
     a = { ...a, state: 'hungry' };
   }
+  // Sujeira e pelo despenteado aparecem com o tempo, um de cada vez, nunca como castigo
+  if (!a.dirty && !a.scruffy && a.dirtyAt && now >= a.dirtyAt) {
+    a = { ...a, dirty: true };
+  } else if (!a.scruffy && !a.dirty && a.scruffyAt && now >= a.scruffyAt) {
+    a = { ...a, scruffy: true };
+  }
   return a;
+}
+
+/** Aplica um cuidado (lavar / escovar). Retorna { animal, gainedHeart }. */
+export function applyCare(animal, kind, now) {
+  const C = BALANCE.care;
+  const breather = now + C.breatherMs; // o outro pedido não aparece logo em seguida
+  if (kind === 'wash') {
+    const needed = animal.dirty;
+    const gainedHeart = needed || now - (animal.lastWashAt || 0) >= C.heartCooldownMs;
+    return {
+      gainedHeart,
+      animal: {
+        ...animal, dirty: false, dirtyAt: now + C.dirtyAfterMs, lastWashAt: now, lastCareAt: now,
+        scruffyAt: animal.scruffy ? animal.scruffyAt : Math.max(animal.scruffyAt || 0, breather),
+      },
+    };
+  }
+  const needed = animal.scruffy;
+  const gainedHeart = needed || now - (animal.lastBrushAt || 0) >= C.heartCooldownMs;
+  return {
+    gainedHeart,
+    animal: {
+      ...animal, scruffy: false, scruffyAt: now + C.scruffyAfterMs, lastBrushAt: now, lastCareAt: now,
+      dirtyAt: animal.dirty ? animal.dirtyAt : Math.max(animal.dirtyAt || 0, breather),
+    },
+  };
 }
 
 /** Avança um canteiro. Só cresce depois de regado; nunca murcha. */

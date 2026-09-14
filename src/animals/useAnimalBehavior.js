@@ -6,7 +6,8 @@ import { BALANCE } from '../config/balance.js';
 const WALK_MS = 2400;
 const MAX_STEP = 130;
 
-export function useAnimalBehavior(animal, zone, home) {
+export function useAnimalBehavior(animal, zone, home, frozen = false) {
+  const frozenRef = useRef(frozen); frozenRef.current = frozen;
   const [pos, setPos] = useState(home);
   const [facing, setFacing] = useState(1);
   const [mood, setMood] = useState('idle'); // idle | walk | sleep
@@ -24,7 +25,7 @@ export function useAnimalBehavior(animal, zone, home) {
 
     const step = () => {
       const a = animalRef.current;
-      if (a.state === 'eating' || sleepingRef.current) { schedule(3000); return; }
+      if (a.state === 'eating' || sleepingRef.current || frozenRef.current) { schedule(3000); return; }
 
       const now = Date.now();
       const idleLong = now - (a.lastCareAt || 0) > BALANCE.animals.sleepAfterIdleMs;

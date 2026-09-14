@@ -20,6 +20,7 @@ Jogo para criança de 3 anos em tablet touch. Estas regras valem para qualquer a
 - Persistência só pela interface de `persistence/storage.js`. Mudou o formato do save: subir `SCHEMA_VERSION` e tratar em `migrate()`.
 - Novo minigame: componente com props `{ params, onDone, onExit }` + entrada em `minigames/registry.js`. Sair antes nunca é castigo.
 - Áudio só via `audio.play('nome')`; trocar síntese por arquivos é mudança interna em `audio/`.
+- Cuidado por gesto (lavar/escovar): a sessão vive em `GameProvider` (`care`, `startCare/careStroke/cancelCare`); a regra fica em `rules/production.js` (`applyCare`). Nova ferramenta = entrada em `CARE_TOOLS` (content.js) + ícone + fonte no `CareKit`.
 
 ## Armadilhas conhecidas
 
@@ -27,5 +28,6 @@ Jogo para criança de 3 anos em tablet touch. Estas regras valem para qualquer a
 - iOS só libera áudio depois de um gesto: `audio.unlock()` é chamado no primeiro `pointerdown` (já está no `GameProvider`).
 - No modo "item na mão" (sticky), o `pointerdown` é interceptado na captura da `window` e o `click` seguinte é engolido; handlers de toque devem usar `onClick` (ações) ou `onPointerDown` (fontes de arraste), não os dois.
 - `public/sw.template.js` vira `dist/sw.js` no build com `__VERSION__` = hash do bundle (`replaceAll`: o marcador também aparece no comentário). Nunca editar `dist/sw.js` à mão. Arquivos novos da casca do app entram na lista `SHELL` do template.
+- `npm run dev` gera um `index.html` que DESREGISTRA o service worker e limpa caches; só o build de produção registra. Sem isso o preview local serve o bundle antigo do cache.
 - O registro do service worker fica só no `index.html` gerado (não no `artifact.html`): o Artifact não é o caminho de instalação, só de demonstração.
 - O preview local é registrado em `C:\Users\User\Documents\CLAUDE\.claude\launch.json` (nome `fazendinha`, porta 3040), não nesta pasta.

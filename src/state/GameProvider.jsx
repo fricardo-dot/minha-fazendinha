@@ -13,7 +13,8 @@ import { audio } from '../audio/AudioManager.js';
 import { useFx } from '../components/Fx.jsx';
 import { stageFor, canPet } from '../rules/friendship.js';
 import { basketValue, canAfford, shouldPlayEggMinigame, upgradeById } from '../rules/economy.js';
-import { PRODUCT_REWARD } from '../config/content.js';
+import { PRODUCT_REWARD, CARE_TOOLS } from '../config/content.js';
+import { applyCare } from '../rules/production.js';
 
 const GameContext = createContext(null);
 export const useGame = () => useContext(GameContext);
@@ -35,6 +36,9 @@ export function GameProvider({ children }) {
   const [hint, setHint] = useState(null);
   const [heartMeter, setHeartMeter] = useState(null); // { animalId, until }
   const [coinFlash, setCoinFlash] = useState(0);      // incrementa quando faltam moedas
+  const [care, setCare] = useState(null);             // { animalId, tool, kind, strokes }
+  const careRef = useRef(null);
+  careRef.current = care;
   const lastInputAt = useRef(Date.now());
 
   // ── Loop de tempo ────────────────────────────────────────────
@@ -69,7 +73,7 @@ export function GameProvider({ children }) {
   // ── Dicas por ociosidade ─────────────────────────────────────
   useEffect(() => {
     const t = setInterval(() => {
-      if (minigame) { setHint(null); return; }
+      if (minigame || careRef.current) { setHint(null); return; }
       const idle = Date.now() - lastInputAt.current;
       if (idle < BALANCE.hints.idleMs) return;
       setHint(nextHint(stateRef.current));
@@ -195,8 +199,56 @@ export function GameProvider({ children }) {
     openMilking(animalId) {
       const a = stateRef.current.animals[animalId];
       if (!a || a.state !== 'ready') return false;
+      careRef.current = null;
+      setCare(null);
       setMinigame({ id: 'milking', animalId });
       return true;
+    },
+
+    /** Começa uma sessão de esfregar (esponja ou escova) em um animal. */
+    startCare(animalId, tool) {
+      const def = CARE_TOOLS[tool];
+      if (!def || careRef.current || !stateRef.current.animals[animalId]) return false;
+      const session = { animalId, tool, kind: def.kind, strokes: 0 };
+      careRef.current = session;
+      setCare(session);
+      return true;
+    },
+
+    /** Uma esfregada. Retorna o progresso 0..1; ao completar, aplica o cuidado. */
+    careStroke(animalId, at) {
+      const c = careRef.current;
+      if (!c || c.animalId !== animalId) return 0;
+      const strokes = c.strokes + 1;
+      const needed = BALANCE.care.strokes;
+      audio.play(c.kind === 'wash' ? 'bubble' : 'swish', 90);
+      fx.burst({ x: at.x, y: at.y, kind: c.kind === 'wash' ? 'poof' : 'sparkle', size: 0.5 });
+      if (strokes >= needed) {
+        const a = stateRef.current.animals[animalId];
+        const now = Date.now();
+        const { gainedHeart } = applyCare(a, c.kind, now);
+        dispatch({ type: 'CARE', animalId, kind: c.kind, now });
+        careRef.current = null;
+        setCare(null);
+        audio.play('success');
+        fx.burst({ x: at.x, y: at.y - 40, kind: 'sparkle' });
+        if (gainedHeart) { showHearts(animalId, at); checkLevelUp(animalId, a, at); }
+        fx.fly({ kind: c.tool, from: at, to: { x: LAYOUT.careKit.x + (c.tool === 'sponge' ? -40 : 40), y: LAYOUT.careKit.y - 20 }, delay: 300 });
+        return 1;
+      }
+      const next = { ...c, strokes };
+      careRef.current = next;
+      setCare(next);
+      return strokes / needed;
+    },
+
+    /** Desistiu no meio: a ferramenta volta para o kit, sem castigo. */
+    cancelCare(at) {
+      const c = careRef.current;
+      if (!c) return;
+      careRef.current = null;
+      setCare(null);
+      if (at) fx.fly({ kind: c.tool, from: at, to: { x: LAYOUT.careKit.x + (c.tool === 'sponge' ? -40 : 40), y: LAYOUT.careKit.y - 20 } });
     },
 
     /** Chamado pelo minigame de ordenha quando o balde enche. */
@@ -240,9 +292,9 @@ export function GameProvider({ children }) {
   }, [heartMeter]);
 
   const value = useMemo(() => ({
-    state, actions, minigame, hint, heartMeter, coinFlash,
+    state, actions, minigame, hint, heartMeter, coinFlash, care,
     rewards: PRODUCT_REWARD, upgradeById,
-  }), [state, actions, minigame, hint, heartMeter, coinFlash]);
+  }), [state, actions, minigame, hint, heartMeter, coinFlash, care]);
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
 }

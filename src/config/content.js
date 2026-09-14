@@ -21,6 +21,12 @@ export const UPGRADES = [
   { id: 'barn2', cost: 12, target: 'barn', effect: 'Celeiro maior com silo' },
 ];
 
+// Ferramentas de cuidado: item que a criança carrega → tipo de cuidado no animal.
+export const CARE_TOOLS = {
+  sponge: { kind: 'wash', need: 'dirty' },
+  brush: { kind: 'brush', need: 'scruffy' },
+};
+
 // Espaços reservados para expansão futura (só desenho sutil na V1).
 export const EXPANSION_SLOTS = [
   { id: 'pond', label: 'lago' },

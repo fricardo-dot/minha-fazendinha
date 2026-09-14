@@ -149,6 +149,27 @@ export const SOUNDS = {
     src.start(t); src.stop(end + 0.05);
     [659, 880, 1319].forEach((f, i) => tone(ctx, out, { f0: f, t0: t + 0.25 + i * 0.1, dur: 0.25, peak: 0.18 }));
   },
+  // Escovar: "shh" curto e macio
+  swish(ctx, out) {
+    const t = ctx.currentTime;
+    const src = ctx.createBufferSource();
+    src.buffer = noiseBuffer(ctx);
+    const filt = ctx.createBiquadFilter();
+    filt.type = 'bandpass'; filt.Q.value = 0.8;
+    filt.frequency.setValueAtTime(1400, t);
+    filt.frequency.exponentialRampToValueAtTime(3200, t + 0.16);
+    const g = ctx.createGain();
+    src.connect(filt); filt.connect(g); g.connect(out);
+    const end = env(ctx, g, t, { a: 0.02, d: 0.08, s: 0.4, hold: 0.04, r: 0.08, peak: 0.14 });
+    src.start(t); src.stop(end + 0.05);
+  },
+  // Lavar: bolhinha estourando
+  bubble(ctx, out) {
+    const t = ctx.currentTime;
+    const f = 700 + Math.random() * 500;
+    tone(ctx, out, { type: 'sine', f0: f, f1: f * 1.8, t0: t, dur: 0.09, peak: 0.16 });
+    tone(ctx, out, { type: 'sine', f0: f * 0.7, f1: f * 1.3, t0: t + 0.07, dur: 0.07, peak: 0.1 });
+  },
   // Ordenha: esguicho curto
   squirt(ctx, out) {
     const t = ctx.currentTime;

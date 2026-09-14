@@ -31,6 +31,7 @@ export const LAYOUT = {
   ],
   wateringCan: { x: 590, y: 850 },
   flowerbed: { x: 680, y: 800, w: 360, h: 150 },
+  careKit: { x: 1040, y: 745 },                 // caixote com esponja e escova
   basket: { x: 1180, y: 860 },
   delivery: { x: 1420, y: 850 },
   signs: {

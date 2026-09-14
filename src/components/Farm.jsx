@@ -8,6 +8,7 @@ import { Barn } from '../buildings/Barn.jsx';
 import { FlowerBed } from '../buildings/FlowerBed.jsx';
 import { CornField } from '../buildings/CornField.jsx';
 import { CornPile, HayBale, WateringCan } from '../buildings/FoodSources.jsx';
+import { CareKit } from '../buildings/CareKit.jsx';
 import { Basket, DeliveryBox } from '../buildings/BasketAndDelivery.jsx';
 import { UpgradeSigns } from '../buildings/UpgradeSign.jsx';
 import { AnimalActor } from '../animals/AnimalActor.jsx';
@@ -30,6 +31,7 @@ export function Farm() {
       <CornPile />
       <HayBale />
       <WateringCan />
+      <CareKit />
       <Basket />
       <DeliveryBox />
       {Object.keys(ANIMALS).map((id) => <AnimalActor key={id} id={id} />)}

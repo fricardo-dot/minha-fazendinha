@@ -30,6 +30,9 @@ export function nextHint(state) {
   if (hungryOf(state, 'chicken').length && state.inventory.corn > 0) return 'source:corn';
   if (hungryOf(state, 'cow').length) return 'source:hay';
 
+  if (animals.some((a) => a.dirty)) return 'source:sponge';
+  if (animals.some((a) => a.scruffy)) return 'source:brush';
+
   const dryPlot = state.plots.findIndex((p) => p.stage === 'seed' && !p.watered);
   if (dryPlot >= 0) return 'source:water';
 

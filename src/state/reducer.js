@@ -1,6 +1,6 @@
 // Reducer puro do jogo. Nenhum efeito colateral, nenhum som, nenhuma animação aqui.
 import { BALANCE } from '../config/balance.js';
-import { tickAnimal, tickPlot, feedAnimal, collectFromAnimal } from '../rules/production.js';
+import { tickAnimal, tickPlot, feedAnimal, collectFromAnimal, applyCare } from '../rules/production.js';
 import { basketValue, upgradeById } from '../rules/economy.js';
 import { canPet } from '../rules/friendship.js';
 import { createInitialState } from './initialState.js';
@@ -72,6 +72,14 @@ export function reducer(state, action) {
       return updateAnimal(state, animalId, (a) =>
         canPet(a, now) ? { ...a, hearts: a.hearts + F.perCare, lastPetAt: now, lastCareAt: now } : a,
       );
+    }
+
+    case 'CARE': {
+      const { animalId, kind, now } = action;
+      return updateAnimal(state, animalId, (a) => {
+        const { animal, gainedHeart } = applyCare(a, kind, now);
+        return gainedHeart ? { ...animal, hearts: animal.hearts + F.perCare } : animal;
+      });
     }
 
     case 'PLANT':

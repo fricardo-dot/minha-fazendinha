@@ -1,7 +1,8 @@
 // Ator de animal: posiciona o sprite, cuida do balão de pedido, do medidor de corações,
 // do alvo de soltura (comida) e das reações ao toque.
 import { useEffect, useRef, useState } from 'react';
-import { ANIMALS } from '../config/content.js';
+import { ANIMALS, CARE_TOOLS } from '../config/content.js';
+import { CareOverlay } from './CareOverlay.jsx';
 import { BALANCE } from '../config/balance.js';
 import { LAYOUT } from '../config/layout.js';
 import { useGame } from '../state/GameProvider.jsx';
@@ -25,15 +26,31 @@ function homeOf(def) {
 }
 
 export function AnimalActor({ id }) {
-  const { state, actions, hint, heartMeter } = useGame();
+  const { state, actions, hint, heartMeter, care } = useGame();
   const animal = state.animals[id];
   const def = ANIMALS[id];
   const cfg = SPRITES[def.type];
   const home = homeOf(def);
   const zone = LAYOUT[cfg.zone];
-  const { pos, facing, mood, wake } = useAnimalBehavior(animal, zone, home);
+  const inCare = !!care && care.animalId === id;
+  const { pos, facing, mood, wake } = useAnimalBehavior(animal, zone, home, inCare);
   const [reaction, setReaction] = useState(null); // 'happy' | 'shake'
+  const [shiny, setShiny] = useState(false);
   const stage = stageFor(animal.hearts);
+
+  // Ao terminar um cuidado (sujeira/pelo sumiu), o animal fica brilhante por alguns segundos
+  const wasInCare = useRef(false);
+  useEffect(() => {
+    if (wasInCare.current && !inCare && !animal.dirty && !animal.scruffy) {
+      setShiny(true); setReaction('happy');
+      const t = setTimeout(() => setShiny(false), 3500);
+      const t2 = setTimeout(() => setReaction(null), 650);
+      wasInCare.current = false;
+      return () => { clearTimeout(t); clearTimeout(t2); };
+    }
+    wasInCare.current = inCare;
+    return undefined;
+  }, [inCare, animal.dirty, animal.scruffy]);
 
   // Sons quando algo fica pronto
   const prevState = useRef(animal.state);
@@ -49,9 +66,10 @@ export function AnimalActor({ id }) {
   const react = (kind) => { setReaction(kind); setTimeout(() => setReaction(null), 650); };
 
   const { ref, isHover, wantsHeld } = useDropTarget(`animal:${id}`, {
-    accepts: (item) => item.kind === BALANCE.animals[def.type].food,
+    accepts: (item) => !care && (item.kind === BALANCE.animals[def.type].food || !!CARE_TOOLS[item.kind]),
     onDrop: (item) => {
       wake();
+      if (CARE_TOOLS[item.kind]) return actions.startCare(id, item.kind);
       const ok = actions.feed(id, item.kind, center());
       if (ok) react('happy'); else react('shake');
       return ok;
@@ -74,7 +92,15 @@ export function AnimalActor({ id }) {
           : animal.state === 'hungry' ? 'hungry'
             : 'normal';
 
-  const wantIcon = animal.state === 'hungry' ? BALANCE.animals[def.type].food : (def.type === 'cow' && animal.state === 'ready') ? 'milk' : null;
+  const wantIcon = inCare ? null
+    : animal.state === 'hungry' ? BALANCE.animals[def.type].food
+      : (def.type === 'cow' && animal.state === 'ready') ? 'milk'
+        : animal.dirty ? 'sponge'
+          : animal.scruffy ? 'brush'
+            : null;
+  const progress = inCare ? care.strokes / BALANCE.care.strokes : 0;
+  const dirtOpacity = animal.dirty ? (inCare && care.kind === 'wash' ? 1 - progress : 1) : 0;
+  const scruffOpacity = animal.scruffy ? (inCare && care.kind === 'brush' ? 1 - progress : 1) : 0;
   const moodCls = animal.state === 'eating' ? 'is-eating' : mood === 'sleep' ? 'is-sleeping' : mood === 'walk' ? 'is-walking' : 'is-idle';
   const cls = ['fz-animal', 'fz-tappable', moodCls, reaction === 'happy' && 'is-happy', reaction === 'shake' && 'is-shaking', isHover && 'is-drop-hover', wantsHeld && animal.state === 'hungry' && 'wants-held', hint === `animal:${id}` && 'is-hinted'].filter(Boolean).join(' ');
 
@@ -85,15 +111,21 @@ export function AnimalActor({ id }) {
         <div className="fz-press" style={{ width: cfg.w, height: cfg.h }}>
           <div className={`fz-animal-flip ${facing < 0 ? 'face-left' : ''}`}>
             <div className="fz-animal-body">
-              <cfg.Sprite expression={expression} stage={stage} />
+              <cfg.Sprite expression={expression} stage={stage} dirt={dirtOpacity} scruff={scruffOpacity} />
             </div>
           </div>
         </div>
         {mood === 'sleep' && animal.state !== 'eating' && <div className="fz-zzz">z</div>}
+        {shiny && [[12, 18], [78, 8], [88, 52]].map(([l, t], i) => (
+          <svg key={i} className="fz-twinkle" style={{ left: `${l}%`, top: `${t}%`, animationDelay: `${i * 0.3}s` }} width="34" height="34" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2l2 7 7 3-7 3-2 7-2-7-7-3 7-3z" fill="#FFF3B0" stroke="#F0B429" strokeWidth="1.2" strokeLinejoin="round" />
+          </svg>
+        ))}
         {wantIcon && <ThoughtBubble icon={wantIcon} />}
         {heartMeter && heartMeter.animalId === id && <HeartMeter hearts={animal.hearts} />}
         <div className="fz-touch" style={{ width: cfg.w + 60, height: cfg.h + 40 }} />
       </div>
+      {inCare && <CareOverlay animalId={id} pos={pos} width={cfg.w + 140} height={cfg.h + 90} />}
     </>
   );
 }

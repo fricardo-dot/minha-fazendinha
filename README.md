@@ -41,6 +41,7 @@ Atualizações: o service worker guarda a casca do app; a versão do cache é o 
 - Cesta de coleta e caminhão de entregas (ovos e leite viram moedas).
 - Minigame da cesta de ovos quando há 4+ ovos na entrega (bônus).
 - 3 melhorias com mudança física: galinheiro pintado, canteiro de flores, celeiro com silo.
+- Cuidados com gesto de esfregar: os animais ficam de vez em quando empoeirados (pedem esponja) ou despenteados (pedem escova); a criança leva a ferramenta do kit até o animal e esfrega com o dedo até ele ficar limpo e brilhante.
 - Amizade por animal (corações) com 3 estágios visuais: sino / ninho bonito / pintinho / coroa de flores.
 - Dicas automáticas após alguns segundos sem toque; área dos pais por toque longo (3 s).
 - Progresso salvo no aparelho (localStorage), com timers por timestamp (nada morre nem apodrece).

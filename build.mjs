@@ -23,6 +23,22 @@ const options = {
   logLevel: 'info',
 };
 
+// Produção: registra o service worker (só https/localhost; falha silenciosa).
+const swProdScript = `<script>
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  });
+}
+</script>`;
+// Desenvolvimento: garante que nenhum service worker antigo sirva um bundle desatualizado.
+const swDevScript = `<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(function (rs) { rs.forEach(function (r) { r.unregister(); }); });
+  if (window.caches) caches.keys().then(function (ks) { ks.forEach(function (k) { caches.delete(k); }); });
+}
+</script>`;
+
 function writeHtml() {
   mkdirSync('dist', { recursive: true });
   const body = readFileSync('src/template.body.html', 'utf8');
@@ -56,14 +72,7 @@ function writeHtml() {
 <body>
 ${body}
 <script src="app.js"></script>
-<script>
-// Service worker: só em https (ou localhost). Falha silenciosa: o jogo funciona igual sem ele.
-if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
-  window.addEventListener('load', function () {
-    navigator.serviceWorker.register('sw.js').catch(function () {});
-  });
-}
-</script>
+${serve ? swDevScript : swProdScript}
 </body>
 </html>
 `;

@@ -3,8 +3,14 @@ import { ANIMALS } from '../config/content.js';
 
 export const SCHEMA_VERSION = 1;
 
-function makeAnimal(def) {
+function makeAnimal(def, now) {
   return {
+    dirty: false,      // precisa de banho (esponja)
+    scruffy: false,    // precisa de escova
+    dirtyAt: now + BALANCE.care.firstDirtyMs,
+    scruffyAt: now + BALANCE.care.firstScruffyMs,
+    lastWashAt: 0,
+    lastBrushAt: 0,
     id: def.id,
     type: def.type,
     state: 'hungry',   // hungry | eating | producing | ready | resting
@@ -18,8 +24,9 @@ function makeAnimal(def) {
 }
 
 export function createInitialState() {
+  const now = Date.now();
   const animals = {};
-  for (const def of Object.values(ANIMALS)) animals[def.id] = makeAnimal(def);
+  for (const def of Object.values(ANIMALS)) animals[def.id] = makeAnimal(def, now);
   return {
     version: SCHEMA_VERSION,
     coins: 0,

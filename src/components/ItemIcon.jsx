@@ -56,6 +56,28 @@ export function ItemIcon({ kind, size = 72 }) {
           <path d="M32 20v24M26 26h10a4 4 0 0 1 0 8h-8a4 4 0 0 0 0 8h10" fill="none" stroke="#B8860B" strokeWidth="3.5" strokeLinecap="round" />
         </svg>
       );
+    case 'sponge':
+      return (
+        <svg viewBox="0 0 64 64" style={s}>
+          <rect x="8" y="22" width="48" height="30" rx="10" fill="#FFE066" stroke={STROKE} strokeWidth="3" />
+          <g fill="#F0C040"><circle cx="20" cy="32" r="3" /><circle cx="34" cy="40" r="3.5" /><circle cx="44" cy="30" r="2.5" /><circle cx="26" cy="45" r="2.2" /></g>
+          <g fill="#DDF3FB" stroke="#4FB3E0" strokeWidth="2">
+            <circle cx="16" cy="16" r="6" /><circle cx="30" cy="10" r="4.5" /><circle cx="46" cy="14" r="5.5" /><circle cx="56" cy="24" r="3.5" />
+          </g>
+          <g fill="#fff"><circle cx="14" cy="14" r="1.6" /><circle cx="44" cy="12" r="1.6" /></g>
+        </svg>
+      );
+    case 'brush':
+      return (
+        <svg viewBox="0 0 64 64" style={s}>
+          <path d="M10 34c0-10 8-16 22-16s22 6 22 16v6H10z" fill="#D19A5B" stroke={STROKE} strokeWidth="3" strokeLinejoin="round" />
+          <rect x="24" y="8" width="16" height="14" rx="6" fill="#E0574B" stroke={STROKE} strokeWidth="3" />
+          <g stroke="#A8703A" strokeWidth="3" strokeLinecap="round">
+            <line x1="14" y1="40" x2="14" y2="54" /><line x1="21" y1="40" x2="21" y2="56" /><line x1="28" y1="40" x2="28" y2="55" />
+            <line x1="35" y1="40" x2="35" y2="56" /><line x1="42" y1="40" x2="42" y2="55" /><line x1="49" y1="40" x2="49" y2="54" />
+          </g>
+        </svg>
+      );
     case 'seed':
       return (
         <svg viewBox="0 0 64 64" style={s}>

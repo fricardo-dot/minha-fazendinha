@@ -3,7 +3,7 @@ import { memo } from 'react';
 
 const INK = '#5B3D2E';
 
-export const ChickenSprite = memo(function ChickenSprite({ expression = 'normal', stage = 1 }) {
+export const ChickenSprite = memo(function ChickenSprite({ expression = 'normal', stage = 1, dirt = 0, scruff = 0 }) {
   const sleeping = expression === 'sleep';
   const happy = expression === 'happy';
   const hungry = expression === 'hungry';
@@ -22,6 +22,21 @@ export const ChickenSprite = memo(function ChickenSprite({ expression = 'normal'
       <ellipse cx="100" cy="122" rx="62" ry="50" fill="#FFF6E4" stroke={INK} strokeWidth="4.5" />
       {/* Asa */}
       <path d="M62 118c10-16 40-20 56-8-10 22-40 30-56 8z" fill="#FFE8C4" stroke={INK} strokeWidth="4" strokeLinejoin="round" />
+      {/* Sujeira (banho) */}
+      {dirt > 0 && (
+        <g className="fz-dirt" style={{ opacity: dirt }}>
+          <ellipse cx="86" cy="150" rx="14" ry="8" fill="#A56F42" /><ellipse cx="116" cy="158" rx="11" ry="6" fill="#8E5E36" />
+          <ellipse cx="60" cy="132" rx="9" ry="6" fill="#A56F42" /><circle cx="140" cy="146" r="6" fill="#8E5E36" />
+          <circle cx="150" cy="100" r="4" fill="#A56F42" />
+        </g>
+      )}
+      {/* Penas despenteadas (escova) */}
+      {scruff > 0 && (
+        <g className="fz-scruff" style={{ opacity: scruff }} fill="none" stroke={INK} strokeWidth="3.5" strokeLinecap="round">
+          <path d="M70 78l-10-16M84 74l-4-18M98 74l6-18M56 96l-16-8" />
+          <path d="M72 78c-4-2-6-6-4-10M88 74c-2-4 0-8 4-10" stroke="#E8C466" />
+        </g>
+      )}
       {/* Cabeça */}
       <circle cx="132" cy="70" r="36" fill="#FFF6E4" stroke={INK} strokeWidth="4.5" />
       {/* Crista */}

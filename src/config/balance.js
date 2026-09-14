@@ -22,6 +22,19 @@ export const BALANCE = {
     petCooldownMs: 8000,     // intervalo mínimo entre corações por carinho
   },
 
+  care: {
+    // Cuidados com gesto de esfregar (lavar com esponja, escovar)
+    dirtyAfterMs: 90000,     // depois de um cuidado, tempo até o animal ficar empoeirado de novo
+    scruffyAfterMs: 150000,  // idem para ficar despenteado
+    firstDirtyMs: 40000,     // na primeira partida, sujeira aparece cedo para a criança descobrir
+    firstScruffyMs: 110000,
+    strokes: 6,              // esfregadas para concluir
+    strokeDistance: 110,     // deslocamento do dedo (unidades lógicas) que conta como uma esfregada
+    idleCancelMs: 12000,     // sem esfregar por este tempo, a ferramenta volta sozinha
+    heartCooldownMs: 30000,  // coração por cuidado "sem necessidade" só depois deste intervalo
+    breatherMs: 45000,       // depois de um cuidado, o outro pedido espera pelo menos isto
+  },
+
   crops: {
     corn: {
       stageMs: 3000,        // tempo entre cada estágio: semente → broto → crescendo → pronto
