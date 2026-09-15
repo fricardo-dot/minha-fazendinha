@@ -34,6 +34,12 @@ Jogo para criança de 3 anos em tablet touch. Estas regras valem para qualquer a
 - Áudio só via `audio.play('nome')`; trocar síntese por arquivos é mudança interna em `audio/`.
 - Cuidado por gesto (lavar/escovar): a sessão vive em `GameProvider` (`care`, `startCare/careStroke/cancelCare`); a regra fica em `rules/production.js` (`applyCare`). Nova ferramenta = entrada em `CARE_TOOLS` (content.js) + ícone + fonte no `CareKit`.
 
+## Direção de arte (desde 2026-09-15)
+
+- Vista 3/4 com estilo "brinquedo 3D": volumes por gradiente (ids `s-*` esféricos e `f-*` de faces em `src/art/ArtDefs.jsx`), contorno fino e quente (`RIM`), sombra de contato com `Shadow` (gradiente, nunca filtro de blur), brilho com `Gloss`. Nada de contorno preto grosso nem cor chapada em objetos novos.
+- Ordem de desenho dentro de uma área = profundidade (fundo → frente). Cercas da frente vêm depois dos animais.
+- Animação de `transform` em `<g>` de SVG grande repinta o SVG inteiro a cada quadro: elementos que se movem o tempo todo (nuvens, borboletas, pato) ficam em `div` próprio com `transform` composto.
+
 ## Armadilhas conhecidas
 
 - Animação CSS com `transform` em um `<g>` SVG **sobrescreve** o atributo `transform` desse `<g>`. Envolva em um `<g>` externo com o `translate` e anime o interno.

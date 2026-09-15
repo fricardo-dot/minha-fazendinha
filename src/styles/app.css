@@ -60,6 +60,27 @@ body {
 .fz-persistent { position: absolute; left: 0; top: 0; width: 1600px; height: 1000px; pointer-events: none; z-index: 30; }
 .fz-persistent > * { pointer-events: auto; }
 
+/* Nuvens andando devagar (o grupo tem uma cópia deslocada para o loop ser contínuo) */
+.fz-clouds-layer { position: absolute; left: 0; top: 0; width: 1600px; height: 200px; overflow: hidden; pointer-events: none; }
+.fz-clouds { position: absolute; left: 0; top: 0; width: 3200px; height: 200px; will-change: transform; animation: fz-clouds 140s linear infinite; }
+@keyframes fz-clouds { from { transform: translateX(0); } to { transform: translateX(-1600px); } }
+
+/* Borboletas: voo em elipse + bater de asas */
+.fz-butterfly { position: absolute; left: 0; top: 0; animation: fz-flutter var(--dur) ease-in-out infinite; }
+@keyframes fz-flutter {
+  0% { transform: translate(calc(var(--rx) * -1), 0) scaleX(1); }
+  25% { transform: translate(0, calc(var(--ry) * -1)) scaleX(1); }
+  49% { transform: translate(var(--rx), 0) scaleX(1); }
+  51% { transform: translate(var(--rx), 0) scaleX(-1); }
+  75% { transform: translate(0, var(--ry)) scaleX(-1); }
+  99% { transform: translate(calc(var(--rx) * -1), 0) scaleX(-1); }
+  100% { transform: translate(calc(var(--rx) * -1), 0) scaleX(1); }
+}
+.fz-butterfly-wings .wing-l { animation: fz-wing-l .25s ease-in-out infinite alternate; }
+.fz-butterfly-wings .wing-r { animation: fz-wing-r .25s ease-in-out infinite alternate; }
+@keyframes fz-wing-l { from { transform: scaleX(1); } to { transform: scaleX(.35); } }
+@keyframes fz-wing-r { from { transform: scaleX(1); } to { transform: scaleX(.35); } }
+
 /* Lago: pato nadando de um lado para o outro */
 .fz-duck-lane { position: absolute; height: 100px; pointer-events: none; }
 .fz-duck { position: absolute; left: 0; top: 0; width: 120px; height: 100px; pointer-events: auto; animation: fz-swim 14s ease-in-out infinite; }
@@ -88,7 +109,7 @@ svg { display: block; overflow: visible; }
 
 /* ── Interação ─────────────────────────────────────────────── */
 .fz-tappable { cursor: pointer; }
-.fz-tappable:active .fz-press { transform: scale(.94); }
+.fz-tappable:active .fz-press { transform: scale(1.06, .92); }
 .fz-press { transition: transform .12s ease; transform-origin: 50% 90%; }
 
 .is-hinted .fz-press, .is-hinted.fz-hint-self {
@@ -370,6 +391,6 @@ svg { display: block; overflow: visible; }
 /* Movimento reduzido: sem animações infinitas */
 @media (prefers-reduced-motion: reduce) {
   .fz-animal .fz-animal-body, .is-hinted .fz-press, .wants-held .fz-press, .fz-bubble, .fz-flower,
-  .fz-plot.is-ready .plant, .fz-held.is-sticky .fz-held-inner, .fz-blink, .fz-zzz, .fz-duck { animation: none !important; }
+  .fz-plot.is-ready .plant, .fz-held.is-sticky .fz-held-inner, .fz-blink, .fz-zzz, .fz-duck, .fz-clouds, .fz-butterfly, .fz-butterfly-wings * { animation: none !important; }
   .fz-map-strip { transition: none; }
 }

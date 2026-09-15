@@ -8,6 +8,7 @@ import { useGame } from '../state/GameProvider.jsx';
 import { useDrag } from '../interaction/DragContext.jsx';
 import { useStage } from './Stage.jsx';
 import { audio } from '../audio/AudioManager.js';
+import { Shadow, Gloss, RIM } from '../art/shading.jsx';
 import { YardArea } from '../areas/YardArea.jsx';
 import { PastureArea } from '../areas/PastureArea.jsx';
 import { LakeArea } from '../areas/LakeArea.jsx';
@@ -134,13 +135,15 @@ function NavArrow({ dir, target, hinted, onClick }) {
     >
       <div className="fz-press" style={{ width: 140, height: 170 }}>
         <svg width="140" height="170" viewBox="0 0 140 170" aria-hidden="true">
-          <ellipse cx="70" cy="164" rx="30" ry="6" fill="rgba(60,40,20,.15)" />
-          <rect x="60" y="110" width="20" height="54" rx="6" fill="#A8703A" stroke="#5B3D2E" strokeWidth="4" />
-          <circle cx="70" cy="64" r="56" fill="#FFF6E4" stroke="#5B3D2E" strokeWidth="5" />
-          <circle cx="70" cy="64" r="46" fill="none" stroke="#E3B47C" strokeWidth="3" strokeDasharray="6 8" />
+          <Shadow x={70} y={164} rx={34} ry={7} />
+          <rect x="60" y="110" width="20" height="54" rx="6" fill="url(#f-wood-side)" stroke={RIM} strokeWidth="1" />
+          <circle cx="70" cy="68" r="56" fill="url(#f-wood-side)" />
+          <circle cx="70" cy="64" r="56" fill="url(#f-wood)" stroke={RIM} strokeWidth="1.2" />
+          <circle cx="70" cy="64" r="46" fill="url(#f-cream)" stroke={RIM} strokeWidth="1" />
           <g transform="translate(70 56) scale(.95)">{ICONS[target.icon]}</g>
           <path d={dir < 0 ? 'M58 104l-14-12 14-12' : 'M82 104l14-12-14-12'} fill="none" stroke="#5B3D2E" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
           <path d={dir < 0 ? 'M44 92h50' : 'M46 92h50'} stroke="#5B3D2E" strokeWidth="6" strokeLinecap="round" />
+          <Gloss x={48} y={36} rx={18} ry={9} opacity={.5} />
         </svg>
       </div>
       <div className="fz-touch" style={{ width: 170, height: 200 }} />

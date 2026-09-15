@@ -1,71 +1,71 @@
-// Fundo de cada área: céu, sol, nuvens, colinas, chão (iguais em todas, para dar continuidade)
-// + detalhes por variante (caminho, cercas, espaços reservados).
+// Fundo de cada área em vista 3/4: céu, sol, nuvens que andam, colinas ao longe,
+// chão em perspectiva (mais claro ao longe, mais vivo perto) com textura de grama e vinheta.
+// Detalhes por variante (caminho, adereços, espaços reservados).
 import { memo } from 'react';
 import { STAGE, LAYOUT } from '../config/layout.js';
+import { Shadow, RIM } from '../art/shading.jsx';
+
+export const HORIZON = 250;
 
 export const Backdrop = memo(function Backdrop({ variant = 'yard' }) {
   const { width: W, height: H } = STAGE;
-  const gid = `bd-${variant}`;
   return (
-    <svg className="fz-box" style={{ left: 0, top: 0 }} width={W} height={H} viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
-      <defs>
-        <linearGradient id={`${gid}-sky`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#A9DFF3" />
-          <stop offset="1" stopColor="#DDF3FB" />
-        </linearGradient>
-        <linearGradient id={`${gid}-ground`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#95D66F" />
-          <stop offset="1" stopColor="#6DBB4C" />
-        </linearGradient>
-        <radialGradient id={`${gid}-sunglow`} cx=".5" cy=".5" r=".5">
-          <stop offset="0" stopColor="#FFF3B0" stopOpacity=".9" />
-          <stop offset="1" stopColor="#FFF3B0" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-
-      {/* Céu */}
-      <rect width={W} height={H} fill={`url(#${gid}-sky)`} />
-      <circle cx="1380" cy="120" r="150" fill={`url(#${gid}-sunglow)`} />
-      <circle cx="1380" cy="120" r="62" fill="#FFD24A" stroke="#F0B429" strokeWidth="6" />
-
-      {/* Nuvens */}
-      <g fill="#FFFFFF" opacity=".95">
-        <Cloud x={220} y={110} s={1} />
-        <Cloud x={720} y={70} s={.8} />
-        <Cloud x={1080} y={150} s={.65} />
-      </g>
-
-      {/* Colinas distantes */}
-      <path d="M0 330 C 200 230, 420 250, 600 310 S 1000 240, 1200 300 S 1500 260, 1600 300 L1600 420 L0 420 Z" fill="#B7E3A1" />
-      <path d="M0 380 C 260 300, 520 330, 760 370 S 1200 300, 1600 370 L1600 460 L0 460 Z" fill="#A5DA8A" />
-
-      {/* Árvores ao fundo */}
-      <Tree x={40} y={360} s={.9} />
-      <Tree x={560} y={340} s={.7} />
-      <Tree x={1010} y={330} s={.75} />
-      <Tree x={1590} y={350} s={.85} />
-
-      {/* Chão */}
-      <path d="M0 400 C 300 370, 600 390, 800 380 S 1300 360, 1600 390 L1600 1000 L0 1000 Z" fill={`url(#${gid}-ground)`} />
-
-      {variant === 'yard' && <YardDetails />}
-      {variant === 'pasture' && <PastureDetails />}
-      {variant === 'lake' && <LakeDetails />}
-    </svg>
+    <>
+      {/* Céu e sol (estático) */}
+      <svg className="fz-box" style={{ left: 0, top: 0 }} width={W} height={HORIZON + 40} viewBox={`0 0 ${W} ${HORIZON + 40}`} aria-hidden="true">
+        <rect width={W} height={HORIZON + 40} fill="url(#f-sky)" />
+        <circle cx="1380" cy="110" r="150" fill="url(#g-gloss)" opacity=".8" />
+        <circle cx="1380" cy="110" r="58" fill="url(#s-gold)" />
+        <circle cx="1380" cy="110" r="74" fill="none" stroke="#FFF3B0" strokeWidth="6" opacity=".35" />
+      </svg>
+      {/* Nuvens em camada própria (animação de transform composta, sem repintar o fundo) */}
+      <div className="fz-clouds-layer" aria-hidden="true">
+        <div className="fz-clouds">
+          <svg width={W * 2} height="200" viewBox={`0 0 ${W * 2} 200`}>
+            <g fill="#FFFFFF" opacity=".96">
+              <Cloud x={220} y={90} s={1} /><Cloud x={720} y={60} s={.75} /><Cloud x={1080} y={130} s={.6} />
+              <g transform={`translate(${W} 0)`}><Cloud x={220} y={90} s={1} /><Cloud x={720} y={60} s={.75} /><Cloud x={1080} y={130} s={.6} /></g>
+            </g>
+          </svg>
+        </div>
+      </div>
+      {/* Colinas, chão e detalhes */}
+      <svg className="fz-box" style={{ left: 0, top: 0 }} width={W} height={H} viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
+        <path d={`M0 ${HORIZON + 20} C 200 150, 420 170, 600 230 S 1000 160, 1200 220 S 1500 180, 1600 220 L1600 ${HORIZON + 60} L0 ${HORIZON + 60} Z`} fill="#BFE7A6" />
+        <path d={`M0 ${HORIZON + 40} C 260 200, 520 230, 760 270 S 1200 210, 1600 270 L1600 ${HORIZON + 80} L0 ${HORIZON + 80} Z`} fill="#A9DB8C" />
+        <g>
+          {[60, 190, 330, 520, 640, 900, 1010, 1150, 1310, 1470, 1580].map((x, i) => <FarTree key={x} x={x} y={HORIZON + 34 + (i % 3) * 6} s={0.55 + (i % 4) * 0.12} />)}
+        </g>
+        <rect x="0" y={HORIZON} width={W} height={H - HORIZON} fill="url(#f-grass)" />
+        <rect x="0" y={HORIZON} width={W} height={H - HORIZON} fill="url(#p-grass)" />
+        <g fill="#B7E58E" opacity=".35">
+          <ellipse cx="300" cy="420" rx="220" ry="40" /><ellipse cx="1200" cy="470" rx="260" ry="46" /><ellipse cx="760" cy="880" rx="300" ry="60" /><ellipse cx="1450" cy="900" rx="180" ry="40" />
+        </g>
+        <rect x="0" y={HORIZON} width={W} height={H - HORIZON} fill="url(#g-ground-vignette)" />
+        {variant === 'yard' && <YardDetails />}
+        {variant === 'pasture' && <PastureDetails />}
+        {variant === 'lake' && <LakeDetails />}
+      </svg>
+    </>
   );
 });
 
 function YardDetails() {
   return (
     <g>
-      {/* Caminho de terra até o celeiro */}
-      <path d="M520 1000 C 560 900, 700 860, 900 830 S 1250 800, 1330 700 S 1420 620, 1470 640" fill="none" stroke="#E9C9A0" strokeWidth="70" strokeLinecap="round" opacity=".85" />
-      <path d="M520 1000 C 560 900, 700 860, 900 830 S 1250 800, 1330 700 S 1420 620, 1470 640" fill="none" stroke="#F4DDBB" strokeWidth="44" strokeLinecap="round" opacity=".9" />
+      {/* Caminho em perspectiva: largo perto, estreito ao longe, até a porta do celeiro */}
+      <path d="M560 1000 C 640 900, 820 860, 980 830 S 1240 760, 1300 690 L1360 690 C 1300 790, 1180 830, 1040 870 S 760 960, 700 1000 Z" fill="#D9B283" opacity=".55" />
+      <path d="M590 1000 C 660 910, 830 870, 985 840 S 1235 775, 1305 700 L1340 700 C 1285 785, 1175 820, 1040 858 S 770 950, 720 1000 Z" fill="url(#f-path)" />
+      <g fill="#C9A276" opacity=".5"><ellipse cx="760" cy="930" rx="10" ry="5" /><ellipse cx="900" cy="880" rx="8" ry="4" /><ellipse cx="1100" cy="820" rx="9" ry="4" /></g>
+      {/* Pedras e adereços */}
+      <Rock x={600} y={520} s={1} /><Rock x={640} y={535} s={.6} /><Rock x={1560} y={760} s={.9} />
+      <HayStack x={1510} y={690} />
+      <Barrel x={1080} y={690} /><Barrel x={1118} y={700} />
+      <Bucket x={560} y={790} />
+      <Log x={1020} y={500} />
       {/* Espaço reservado: horta maior */}
-      <ellipse cx="760" cy="470" rx="120" ry="28" fill="#B8E39B" stroke="#FFFFFF" strokeWidth="4" strokeDasharray="12 14" opacity=".3" />
-      <g fill="#5FAF42" opacity=".8">
-        <Tuft x={620} y={520} /><Tuft x={1060} y={740} /><Tuft x={560} y={470} /><Tuft x={1540} y={820} /><Tuft x={40} y={740} /><Tuft x={700} y={960} />
-      </g>
+      <ellipse cx="760" cy="470" rx="120" ry="26" fill="#C6EC9E" stroke="#FFFFFF" strokeWidth="3" strokeDasharray="10 12" opacity=".35" />
+      <WildFlowers x={640} y={460} /><WildFlowers x={1000} y={960} /><WildFlowers x={40} y={760} /><WildFlowers x={1560} y={560} /><WildFlowers x={880} y={520} />
     </g>
   );
 }
@@ -74,16 +74,11 @@ function PastureDetails() {
   const f = LAYOUT.pastureFence;
   return (
     <g>
-      {/* Espaço reservado no morro: estábulo */}
-      <ellipse cx="1250" cy="430" rx="130" ry="26" fill="#B8E39B" stroke="#FFFFFF" strokeWidth="4" strokeDasharray="12 14" opacity=".3" />
-      {/* Caminho ligando ao quintal */}
-      <path d="M0 830 C 200 810, 500 790, 940 800 S 1400 860, 1600 900" fill="none" stroke="#E9C9A0" strokeWidth="60" strokeLinecap="round" opacity=".7" />
-      <path d="M0 830 C 200 810, 500 790, 940 800 S 1400 860, 1600 900" fill="none" stroke="#F4DDBB" strokeWidth="36" strokeLinecap="round" opacity=".8" />
-      <g fill="#5FAF42" opacity=".8">
-        <Tuft x={60} y={520} /><Tuft x={960} y={470} /><Tuft x={1560} y={760} /><Tuft x={600} y={960} /><Tuft x={40} y={980} />
-      </g>
-      {/* Cerca de trás do pasto (a da frente é desenhada pela área, na frente da vaca) */}
-      <Fence x1={f.x} x2={f.x + f.w} y={f.y + 8} short />
+      <ellipse cx="1250" cy="430" rx="130" ry="26" fill="#C6EC9E" stroke="#FFFFFF" strokeWidth="3" strokeDasharray="10 12" opacity=".35" />
+      <path d="M0 850 C 200 820, 500 800, 940 810 S 1400 870, 1600 910 L1600 960 C 1400 920, 1250 880, 940 860 S 500 850, 0 890 Z" fill="url(#f-path)" opacity=".9" />
+      <Rock x={60} y={520} s={.8} /><Rock x={1560} y={960} s={1} />
+      <WildFlowers x={960} y={470} /><WildFlowers x={40} y={980} /><WildFlowers x={600} y={960} />
+      <FenceBack x1={f.x} x2={f.x + f.w} y={f.y + 8} />
     </g>
   );
 }
@@ -91,59 +86,137 @@ function PastureDetails() {
 function LakeDetails() {
   return (
     <g>
-      <path d="M1600 830 C 1400 810, 1250 790, 1100 800" fill="none" stroke="#E9C9A0" strokeWidth="60" strokeLinecap="round" opacity=".7" />
-      <path d="M1600 830 C 1400 810, 1250 790, 1100 800" fill="none" stroke="#F4DDBB" strokeWidth="36" strokeLinecap="round" opacity=".8" />
-      <Tree x={1300} y={470} s={1.1} />
-      <Tree x={120} y={430} s={.8} />
-      <g fill="#5FAF42" opacity=".8">
-        <Tuft x={1200} y={560} /><Tuft x={80} y={960} /><Tuft x={1100} y={960} /><Tuft x={700} y={450} />
-      </g>
+      <path d="M1600 850 C 1400 830, 1250 810, 1100 820 L1100 870 C 1250 860, 1400 880, 1600 910 Z" fill="url(#f-path)" opacity=".9" />
+      <BigTree x={1300} y={470} s={1.1} /><BigTree x={120} y={430} s={.8} />
+      <Rock x={1200} y={560} s={.9} /><Rock x={80} y={960} s={.7} />
+      <WildFlowers x={1100} y={960} /><WildFlowers x={700} y={450} />
     </g>
   );
 }
 
+// ── Peças de cenário ────────────────────────────────────────
 function Cloud({ x, y, s }) {
   return (
     <g transform={`translate(${x} ${y}) scale(${s})`}>
       <ellipse cx="0" cy="0" rx="80" ry="34" />
-      <circle cx="-30" cy="-16" r="34" />
-      <circle cx="20" cy="-26" r="42" />
-      <circle cx="60" cy="-8" r="30" />
+      <circle cx="-30" cy="-16" r="34" /><circle cx="20" cy="-26" r="42" /><circle cx="60" cy="-8" r="30" />
+      <ellipse cx="10" cy="14" rx="70" ry="18" fill="#DDEFF6" opacity=".6" />
     </g>
   );
 }
 
-function Tree({ x, y, s }) {
+function FarTree({ x, y, s }) {
+  return (
+    <g transform={`translate(${x} ${y}) scale(${s})`} opacity=".85">
+      <rect x="-5" y="-6" width="10" height="26" rx="4" fill="#9A6A3C" />
+      <circle cx="0" cy="-26" r="26" fill="#6FB852" /><circle cx="-16" cy="-14" r="18" fill="#7FC45E" /><circle cx="16" cy="-14" r="18" fill="#7FC45E" />
+      <circle cx="-6" cy="-32" r="12" fill="#94D470" opacity=".8" />
+    </g>
+  );
+}
+
+export function BigTree({ x, y, s }) {
   return (
     <g transform={`translate(${x} ${y}) scale(${s})`}>
-      <rect x="-10" y="-10" width="20" height="50" rx="6" fill="#A8703A" />
-      <circle cx="0" cy="-40" r="46" fill="#5FAF42" />
-      <circle cx="-30" cy="-20" r="34" fill="#6DBB4C" />
-      <circle cx="30" cy="-22" r="34" fill="#6DBB4C" />
-      <circle cx="-12" cy="-46" r="8" fill="#E0574B" /><circle cx="18" cy="-28" r="8" fill="#E0574B" />
+      <Shadow x={0} y={44} rx={70} />
+      <rect x="-12" y="-10" width="24" height="54" rx="8" fill="url(#f-wood-side)" />
+      <circle cx="0" cy="-46" r="50" fill="url(#s-leaf)" /><circle cx="-34" cy="-24" r="36" fill="url(#s-leaf)" /><circle cx="34" cy="-26" r="36" fill="url(#s-leaf)" />
+      <circle cx="-8" cy="-56" r="16" fill="#B9EE8C" opacity=".6" />
+      <circle cx="-14" cy="-50" r="7" fill="url(#s-red)" /><circle cx="20" cy="-30" r="7" fill="url(#s-red)" /><circle cx="-32" cy="-14" r="6" fill="url(#s-red)" />
     </g>
   );
 }
 
-function Tuft({ x, y }) {
-  return <path transform={`translate(${x} ${y})`} d="M0 0c-4-14-10-20-16-24 8 2 14 8 16 14 2-10 8-18 16-22-8 8-12 18-12 32z" />;
+function Rock({ x, y, s }) {
+  return (
+    <g transform={`translate(${x} ${y}) scale(${s})`}>
+      <Shadow x={0} y={16} rx={30} />
+      <path d="M-28 12c-4-16 8-30 26-30s32 12 30 28c-2 10-14 14-30 14s-24-4-26-12z" fill="url(#s-gray)" stroke={RIM} strokeWidth="1" />
+      <ellipse cx="-8" cy="-8" rx="10" ry="5" fill="#fff" opacity=".5" />
+    </g>
+  );
 }
 
-/** Cerca de madeira. Exportada para as áreas desenharem a parte da frente por cima dos animais. */
+function HayStack({ x, y }) {
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <Shadow x={0} y={30} rx={56} />
+      <path d="M-54 28c0-46 22-70 54-70s54 24 54 70z" fill="url(#s-straw)" stroke={RIM} strokeWidth="1.2" />
+      <g stroke="#B8933D" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity=".6"><path d="M-30 10c10-20 22-32 34-38M0 20c4-24 12-40 24-50M-44 24c4-14 10-24 18-32" /></g>
+      <ellipse cx="-12" cy="-28" rx="16" ry="8" fill="#FFF4C4" opacity=".5" />
+      <rect x="-4" y="-56" width="8" height="24" rx="3" fill="url(#f-wood-side)" />
+    </g>
+  );
+}
+
+function Barrel({ x, y }) {
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <Shadow x={0} y={22} rx={26} />
+      <path d="M-20 20c-6-16-6-40 0-56h40c6 16 6 40 0 56z" fill="url(#f-wood)" stroke={RIM} strokeWidth="1.2" />
+      <ellipse cx="0" cy="-36" rx="20" ry="6" fill="url(#f-wood-top)" stroke={RIM} strokeWidth="1" />
+      <g stroke="#7A7F86" strokeWidth="4"><path d="M-23 -22h46M-23 6h46" /></g>
+      <ellipse cx="-8" cy="-8" rx="4" ry="14" fill="#fff" opacity=".25" />
+    </g>
+  );
+}
+
+function Bucket({ x, y }) {
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <Shadow x={0} y={14} rx={22} />
+      <path d="M-18 12l-4-38h44l-4 38z" fill="url(#f-metal)" stroke={RIM} strokeWidth="1.2" strokeLinejoin="round" />
+      <ellipse cx="0" cy="-26" rx="22" ry="6" fill="#DCE6EE" stroke={RIM} strokeWidth="1" />
+      <ellipse cx="0" cy="-26" rx="16" ry="4" fill="url(#s-water)" />
+      <path d="M-20 -28c0-24 40-24 40 0" fill="none" stroke="#7A7F86" strokeWidth="3" strokeLinecap="round" />
+    </g>
+  );
+}
+
+function Log({ x, y }) {
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <Shadow x={0} y={12} rx={48} ry={10} />
+      <rect x="-46" y="-14" width="92" height="26" rx="13" fill="url(#f-wood)" stroke={RIM} strokeWidth="1.2" />
+      <ellipse cx="46" cy="-1" rx="10" ry="13" fill="#F0C48C" stroke={RIM} strokeWidth="1" />
+      <ellipse cx="46" cy="-1" rx="5" ry="7" fill="none" stroke="#B8823F" strokeWidth="2" />
+    </g>
+  );
+}
+
+function WildFlowers({ x, y }) {
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <path d="M0 0c-4-14-10-20-16-24 8 2 14 8 16 14 2-10 8-18 16-22-8 8-12 18-12 32z" fill="#4F9E36" opacity=".8" />
+      <circle cx="-14" cy="-22" r="5" fill="url(#s-pink)" /><circle cx="12" cy="-20" r="5" fill="url(#s-yellow)" /><circle cx="2" cy="-30" r="4" fill="#fff" />
+    </g>
+  );
+}
+
+/** Cerca vista de 3/4: postes com topo e tábuas com brilho. */
 export function Fence({ x1, x2, y, short }) {
   const posts = [];
   for (let x = x1; x <= x2; x += 92) posts.push(x);
-  const h = short ? 44 : 64;
+  const h = short ? 46 : 66;
   return (
     <g>
-      <rect x={x1} y={y - h + 14} width={x2 - x1} height="12" rx="6" fill="#E3B47C" stroke="#A8703A" strokeWidth="3" />
-      <rect x={x1} y={y - h / 2 + 8} width={x2 - x1} height="12" rx="6" fill="#E3B47C" stroke="#A8703A" strokeWidth="3" />
+      <Shadow x={(x1 + x2) / 2} y={y + 4} rx={(x2 - x1) / 2} ry={7} opacity={.7} />
+      <rect x={x1} y={y - h + 14} width={x2 - x1} height="13" rx="5" fill="url(#f-wood)" stroke={RIM} strokeWidth="1" />
+      <rect x={x1} y={y - h + 14} width={x2 - x1} height="4" rx="2" fill="#F5D3A5" opacity=".7" />
+      <rect x={x1} y={y - h / 2 + 8} width={x2 - x1} height="13" rx="5" fill="url(#f-wood)" stroke={RIM} strokeWidth="1" />
+      <rect x={x1} y={y - h / 2 + 8} width={x2 - x1} height="4" rx="2" fill="#F5D3A5" opacity=".7" />
       {posts.map((x) => (
         <g key={x}>
-          <rect x={x - 9} y={y - h} width="18" height={h} rx="6" fill="#F0C58D" stroke="#A8703A" strokeWidth="3" />
-          <path d={`M${x - 9} ${y - h + 4} L${x} ${y - h - 8} L${x + 9} ${y - h + 4}`} fill="#F0C58D" stroke="#A8703A" strokeWidth="3" strokeLinejoin="round" />
+          <rect x={x - 10} y={y - h} width="20" height={h} rx="5" fill="url(#f-wood)" stroke={RIM} strokeWidth="1" />
+          <rect x={x + 3} y={y - h} width="6" height={h} rx="3" fill="#A8703A" opacity=".35" />
+          <path d={`M${x - 10} ${y - h + 4} L${x} ${y - h - 9} L${x + 10} ${y - h + 4}`} fill="#F0C58D" stroke={RIM} strokeWidth="1" strokeLinejoin="round" />
         </g>
       ))}
     </g>
   );
+}
+
+/** Cerca de fundo (mais baixa, sem sombra forte). */
+function FenceBack({ x1, x2, y }) {
+  return <Fence x1={x1} x2={x2} y={y} short />;
 }

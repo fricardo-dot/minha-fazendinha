@@ -1,8 +1,9 @@
-// HUD mínimo: pote de moedas (visual) e botão discreto da área dos pais (segurar).
+// HUD mínimo: pote de moedas (vidro com brilho, moedas empilhadas) e botão discreto da área dos pais.
 import { useEffect, useRef, useState } from 'react';
 import { LAYOUT } from '../config/layout.js';
 import { BALANCE } from '../config/balance.js';
 import { useGame } from '../state/GameProvider.jsx';
+import { Gloss, RIM } from '../art/shading.jsx';
 
 export function CoinJar() {
   const { state, coinFlash } = useGame();
@@ -26,24 +27,26 @@ export function CoinJar() {
     return undefined;
   }, [coins]);
 
-  // Moedas empilhadas em 4 colunas dentro do pote
   const cols = 4;
   return (
     <div className={`fz-hud fz-coinjar ${flash ? 'is-flashing' : ''} ${pop ? 'is-popping' : ''}`} style={{ left: LAYOUT.hud.coinJar.x, top: LAYOUT.hud.coinJar.y, width: 150, height: 150 }}>
       <div className="fz-press" style={{ width: 150, height: 150 }}>
         <svg width="150" height="150" viewBox="0 0 150 150" aria-hidden="true">
-          <path d="M34 34h82v10c8 6 14 18 14 34v50a16 16 0 0 1-16 16H36a16 16 0 0 1-16-16V78c0-16 6-28 14-34z" fill="rgba(210,240,250,.75)" stroke="#5B3D2E" strokeWidth="4.5" strokeLinejoin="round" />
-          <rect x="28" y="20" width="94" height="20" rx="8" fill="#D19A5B" stroke="#5B3D2E" strokeWidth="4" />
+          <ellipse cx="75" cy="146" rx="52" ry="7" fill="url(#g-shadow)" />
+          <path d="M34 34h82v10c8 6 14 18 14 34v50a16 16 0 0 1-16 16H36a16 16 0 0 1-16-16V78c0-16 6-28 14-34z" fill="#DCEFF7" fillOpacity=".55" stroke={RIM} strokeWidth="1.2" strokeLinejoin="round" />
           {Array.from({ length: shown }, (_, i) => {
             const c = i % cols, r = Math.floor(i / cols);
             return (
               <g key={i} transform={`translate(${44 + c * 21} ${130 - r * 12})`}>
-                <ellipse cx="0" cy="0" rx="12" ry="7" fill="#FFD24A" stroke="#B8860B" strokeWidth="2.5" />
-                <ellipse cx="0" cy="-2" rx="12" ry="7" fill="#FFE27A" stroke="#B8860B" strokeWidth="2" />
+                <ellipse cx="0" cy="0" rx="12" ry="7" fill="#C99A1F" />
+                <ellipse cx="0" cy="-2" rx="12" ry="7" fill="url(#s-gold)" stroke="#B8860B" strokeWidth="1" />
               </g>
             );
           })}
-          <path d="M40 60c-6 20-6 40-2 60" fill="none" stroke="#fff" strokeWidth="6" strokeLinecap="round" opacity=".7" />
+          <path d="M34 34h82v10c8 6 14 18 14 34v50a16 16 0 0 1-16 16H36a16 16 0 0 1-16-16V78c0-16 6-28 14-34z" fill="url(#g-gloss)" opacity=".35" />
+          <path d="M40 60c-6 20-6 40-2 60" fill="none" stroke="#fff" strokeWidth="7" strokeLinecap="round" opacity=".75" />
+          <rect x="28" y="20" width="94" height="20" rx="8" fill="url(#f-wood)" stroke={RIM} strokeWidth="1.2" />
+          <rect x="28" y="20" width="94" height="6" rx="3" fill="#F5D3A5" opacity=".7" />
         </svg>
       </div>
       <div className="fz-coin-count">{coins}</div>

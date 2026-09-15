@@ -6,10 +6,12 @@ import { GameProvider } from './state/GameProvider.jsx';
 import { DragProvider } from './interaction/DragContext.jsx';
 import { Farm } from './components/Farm.jsx';
 import { RotateHint } from './components/RotateHint.jsx';
+import { ArtDefs } from './art/ArtDefs.jsx';
 
 function App() {
   return (
     <>
+      <ArtDefs />
       <Stage>
         <FxProvider>
           <GameProvider>

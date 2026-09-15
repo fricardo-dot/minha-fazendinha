@@ -46,6 +46,10 @@ Pote de moedas, cesta, caminhão de entregas e kit de cuidados acompanham a cria
 
 Áreas ficam em `src/areas/` e são registradas em `src/config/areas.js`.
 
+## Visual
+
+Vista 3/4 em estilo "brinquedo 3D" (gradientes, sombras de contato, adereços, textura de grama), feita só com SVG e CSS. O Quintal, os animais, os ícones e a interface persistente já estão nessa direção; Pasto, Lago e os minigames ainda usam a arte antiga e são o próximo passo.
+
 ## O que existe na V1
 
 - 2 galinhas no Quintal (comem milho → ovo no ninho), 1 vaca no Pasto (come feno → leite via minigame de ordenha).

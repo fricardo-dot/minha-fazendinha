@@ -21,15 +21,15 @@ export const LAYOUT = {
   delivery: { x: 1420, y: 850 },
 
   // ── QUINTAL ───────────────────────────────────────────────
-  coop: { x: 70, y: 300, w: 380, h: 300 },
-  coopYard: { x: 90, y: 560, w: 460, h: 170 },   // onde as galinhas andam
+  coop: { x: 60, y: 290, w: 420, h: 330 },       // chão do galinheiro em y≈590
+  coopYard: { x: 90, y: 560, w: 470, h: 170 },   // onde as galinhas andam (pés em 619..730)
   chickenSlots: [
-    { x: 200, y: 640 },
-    { x: 400, y: 660 },
+    { x: 210, y: 660 },
+    { x: 410, y: 690 },
   ],
-  barn: { x: 1090, y: 250, w: 470, h: 380 },
-  cornPile: { x: 1150, y: 660 },
-  hayBale: { x: 1400, y: 655 },
+  barn: { x: 1050, y: 230, w: 520, h: 400 },      // chão do celeiro em y≈600
+  cornPile: { x: 1150, y: 680 },
+  hayBale: { x: 1400, y: 675 },
   field: { x: 60, y: 780, w: 500, h: 190 },
   plots: [
     { x: 140, y: 870 },
